@@ -16,7 +16,7 @@ python score.py \
   --output_file output_file.json
 ```
 
-## 📥 Input File Format
+## Input File Format
 
 The input file should be a JSON list of evaluated questions. Each item must include:
 
