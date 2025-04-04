@@ -1,10 +1,46 @@
-# AgMMU Evaluation Scorer
+# AgMMU QA Evaluation and Scoring Overview
 
-This script scores evaluation results for the **AgMMU** benchmark.
+This is the scoring and evaluation script to evaluate and score your model on the AgMMU dataset. 
 
-## Overview
 
-The `score.py` script evaluates and scores model outputs on the AgMMU dataset. It supports multiple-choice (MCQ) and open-ended question (OEQ) formats and expects outputs to follow a specific JSON structure.
+## AgMMU Evaluation
+The `scoring_eval_pipeline/evaluation/eval.py` script evaluates and scores model outputs on the AgMMU dataset. It supports multiple-choice (MCQ) and open-ended question (OEQ) formats and expects outputs to follow a specific JSON structure.
+## Setup
+
+1. Download Images from Hugging Face (link)
+
+
+## Usage
+
+   python evaluate.py \
+     --data_path /path/to/data.json \
+     --output_path /path/to/output.json \
+     --image_dir /path/to/image_directory/
+
+### Arguments
+
+- `--data_path`: Path to the input dataset JSON file.
+- `--output_path`: Path to save the evaluation results.
+- `--image_dir`: Directory containing input images named as `<faq-id>-1.jpg`.
+
+## Modifying for Your LLM
+
+Update the `run_llms()` function in `evaluate.py` to call your own model.
+
+Edit the `llm_map` passed into `eval_data()` in `main()`:
+
+   llm_map={"your-model-name-oeq": {}, "your-model-name-mcq": {}}
+
+Note that model names must end with `-oeq` for open-ended or `-mcq` for multiple choice.
+
+
+
+
+
+
+## AgMMU Scorer
+
+The `scoring_eval_pipeline/scoring/score.py` script evaluates and scores model outputs on the AgMMU dataset.
 
 ##  How to Use
 
@@ -55,7 +91,7 @@ The input file should be a JSON list of evaluated questions. Each item must incl
 ```
 
 ### Notes:
-- `llm_answers` must include model names ending with `-oeq` for open-ended or `-mcq` for multiple choice.
+
 - The `answer` key inside each model entry should contain the model’s response.
 
 ## Output File
