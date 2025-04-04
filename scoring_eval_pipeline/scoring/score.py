@@ -3,17 +3,17 @@ import os
 import sys
 from statistics import harmonic_mean
 import argparse
-os.chdir('//home/agauba/ICCV/AgMMU/scoring_eval_pipeline')
-sys.path.append('/home/agauba/ICCV/AgMMU/scoring_eval_pipeline') 
+os.chdir('AgMMU/scoring_eval_pipeline')
+sys.path.append('AgMMU/scoring_eval_pipeline') 
 import utils
 
 handler = utils.ModelHandler()
 
-with open('/home/agauba/ICCV/AgMMU/scoring_eval_pipeline/scoring/supporting_files/examples_s1.json') as file:
+with open('AgMMU/scoring_eval_pipeline/scoring/supporting_files/examples_s1.json') as file:
     examples_s1 = json.load(file)
-with open('/home/agauba/ICCV/AgMMU/scoring_eval_pipeline/scoring/supporting_files/examples_s2.json') as file:
+with open('AgMMU/scoring_eval_pipeline/scoring/supporting_files/examples_s2.json') as file:
     examples_s2 = json.load(file)
-with open('/home/agauba/ICCV/AgMMU/scoring_eval_pipeline/scoring/supporting_files/few_word_examples.json') as file:
+with open('AgMMU/scoring_eval_pipeline/scoring/supporting_files/few_word_examples.json') as file:
     few_word_examples = json.load(file)
 
 
