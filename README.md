@@ -11,12 +11,12 @@ The `scoring_eval_pipeline/evaluation/eval.py` script evaluates and scores model
 
 
 ## Usage
-
+```bash
    python evaluate.py \
      --data_path /path/to/data.json \
      --output_path /path/to/output.json \
      --image_dir /path/to/image_directory/
-
+```
 ### Arguments
 
 - `--data_path`: Path to the input dataset JSON file.
