@@ -5,12 +5,13 @@ This is the scoring and evaluation script to evaluate and score your model on th
 
 ## AgMMU Evaluation
 The `scoring_eval_pipeline/evaluation/eval.py` script evaluates and scores model outputs on the AgMMU dataset. It supports multiple-choice (MCQ) and open-ended question (OEQ) formats and expects outputs to follow a specific JSON structure.
-## Setup
+
+### Setup
 
 1. Download Images from Hugging Face (link)
 
 
-## Usage
+### Usage
 ```bash
    python evaluate.py \
      --data_path /path/to/data.json \
