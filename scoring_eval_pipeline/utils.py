@@ -74,7 +74,7 @@ def encode_image(image_path):
 
 def chat_gpt(system, prompt, image_path=None):
     client = OpenAI(
-        api_key='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',
+        api_key='###',
     )
 
     message = create_message(system, prompt, image_path)
