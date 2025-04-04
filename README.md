@@ -23,7 +23,7 @@ The `scoring_eval_pipeline/evaluation/eval.py` script evaluates and scores model
 - `--output_path`: Path to save the evaluation results.
 - `--image_dir`: Directory containing input images named as `<faq-id>-1.jpg`.
 
-## Modifying for Your LLM
+### Modifying for Your LLM
 
 Update the `run_llms()` function in `evaluate.py` to call your own model.
 
@@ -42,7 +42,7 @@ Note that model names must end with `-oeq` for open-ended or `-mcq` for multiple
 
 The `scoring_eval_pipeline/scoring/score.py` script evaluates and scores model outputs on the AgMMU dataset.
 
-##  How to Use
+###  How to Use
 
 To run the scoring script, use the following command:
 
@@ -52,7 +52,7 @@ python score.py \
   --output_file output_file.json
 ```
 
-## Input File Format
+### Input File Format
 
 The input file should be a JSON list of evaluated questions. Each item must include:
 
@@ -94,7 +94,7 @@ The input file should be a JSON list of evaluated questions. Each item must incl
 
 - The `answer` key inside each model entry should contain the model’s response.
 
-## Output File
+### Output File
 
 The `--output_file` will contain:
 - Per-question scores
