@@ -1,0 +1,479 @@
+[
+    {
+        "faq-id": 469770,
+        "title": "Clethera bush leaves dying #469770",
+        "created": "2018-07-12 11:00:10",
+        "updated": "2018-07-21 06:56:26",
+        "state": "Maryland",
+        "county": "Calvert County",
+        "tags": [
+            "shrubs",
+            "abiotic issues"
+        ],
+        "attachments": {
+            "-1": "https://ask2.extension.org/file.php?key=igiu1ftlycecfommefyy3bd5pwl6p1rg&expires=1670371200&signature=c21366e21f2681a4dc247e03af9ace822c6b927c"
+        },
+        "question": "I have two 2 year old clethera bushes that are suddenly turning yellow and brown, leaves curling up and dying.  Two bushes are affected so far. One larger bush seems unaffected at the moment. ",
+        "answer": [
+            {
+                "attachments": [
+                    "https://ask2.extension.org/file.php?key=ugyfkon7y6avwaxvhenf8dzmbwotaokc&expires=1670371200&signature=d0ae6ca28e9825ca7fa88b4bfe1504470041919c",
+                    "https://ask2.extension.org/file.php?key=1vy7xnkdowo2evu-3cbvtvo6zbutvgmy&expires=1670371200&signature=a7103eb69cc4cf2f9958bd28f6f5379512099a34"
+                ]
+            },
+            {
+                "response": "This looks to us like poor establishment and/or a root issue. It does not look like a disease or pest problem. When you installed the plant two years ago, where they root bound in their pots? Did you loosen up the root ball and set the roots outward in the planting hole? Some plants start out tightly bound in their nursery pots and fail to establish into the surrounding soil. They will survive for a year or so but then begin to fail if they aren't' getting sufficient water/nutrients due to poor root establishment. You could pull up one of the symptomatic plants and check the root system. If it pulls up still in the shape of the original container, that is a problem. The roots\u00a0should look white and fleshy rather than dark brown/black.<br><br>Clethra likes moist soil, rich in organic matter. It grows naturally in wet locations. Lack of sufficient moisture, especially during the establishment period, may have also contributed to the problem.<br><br>ckc \u00a0 \u00a0\u00a0",
+                "author": "Home and Garden Information Cent University of Maryland Extension"
+            }
+        ],
+        "species": "clethera",
+        "category": "environmental stress",
+        "qa_information": {
+            "disease/issue identification": "poor establishment and/or a root issue",
+            "symptom description": [
+                "leaves are turning yellow",
+                "leaves are turning brown",
+                "leaves are curling up"
+            ],
+            "management instructions": [
+                "Check the root system by pulling up one of the symptomatic plants.",
+                "Ensure the soil is moist and rich in organic matter."
+            ],
+            "background info": "The bushes are 2 years old. Two bushes are affected, while one larger bush seems unaffected.",
+            "species": "clethera"
+        },
+        "agmmu_question": {
+            "question": "What is the condition of the leaves in the image?",
+            "options": [
+                "leaves are turning yellow and brown, curling up and dying",
+                "leaves are fresh and deep green with thick veins",
+                "leaves are bright and covered with a white powdery coat",
+                "leaves are healthy with a glossy surface and vibrant color"
+            ],
+            "answer": "leaves are turning yellow and brown, curling up and dying",
+            "question_background": "location: Calvert County,Maryland\ntime: 2018-07-12 11:00:10\n",
+            "letter": "A."
+        },
+        "qtype": "symptom/visual description",
+        "llm_answers": {
+            "gpt-4o-oeq": {
+                "answer": "The image depicts a natural wooded area in Calvert County, Maryland. Key visual features include:\n\n1. **Vegetation**: There is a prominent shrub in the foreground with green leaves, some of which are turning brown, indicating possible seasonal change or stress.\n\n2. **Trees**: Several tall trees are visible, with trunks covered in rough bark. The canopy is dense with green leaves, suggesting a healthy forest environment.\n\n3. **Forest Floor**: The ground is covered with a layer of dark soil and scattered dry leaves, typical of a forested area.\n\n4. **Sunlight**: Sunlight filters through the trees, creating a dappled light effect on the foliage and ground.\n\n5. **Background**: In the background, there is a glimpse of water reflecting light, possibly a pond or small lake, adding depth to the scene.\n\n6. **Birdhouse**: Attached to one of the trees is a wooden birdhouse, suggesting human interaction with the environment.\n\nThe overall scene conveys a peaceful, natural setting typical of a forested area in Maryland.",
+                "score": {
+                    "correct": {},
+                    "incorrect": {
+                        "Several tall trees are visible, with trunks covered in rough bark.": "leaves are turning yellow",
+                        "The canopy is dense with green leaves, suggesting a healthy forest environment.": "leaves are turning yellow",
+                        "The ground is covered with a layer of dark soil and scattered dry leaves, typical of a forested area.": "leaves are turning yellow",
+                        "Sunlight filters through the trees, creating a dappled light effect on the foliage and ground.": "leaves are turning brown",
+                        "In the background, there is a glimpse of water reflecting light, possibly a pond or small lake, adding depth to the scene.": "leaves are turning yellow",
+                        "Attached to one of the trees is a wooden birdhouse, suggesting human interaction with the environment.": "leaves are turning yellow"
+                    },
+                    "partially correct": {},
+                    "missing": [
+                        "leaves are curling up"
+                    ],
+                    "irrelevant": [
+                        "There is a prominent shrub in the foreground with green leaves, some of which are turning brown, indicating possible seasonal change or stress."
+                    ],
+                    "repeat": {}
+                }
+            },
+            "gpt-4o-mcq": {
+                "answer": "A",
+                "score": {
+                    "accuracy": 1
+                }
+            }
+        }
+    },
+    {
+        "faq-id": 610013,
+        "title": "Shrub identification request #610013",
+        "created": "2020-01-09 16:12:48",
+        "updated": "2020-01-17 06:26:47",
+        "state": "Maryland",
+        "county": "Montgomery County",
+        "tags": [
+            "plant identification",
+            "trees and shrubs"
+        ],
+        "attachments": {
+            "-1": "https://ask2.extension.org/file.php?key=mef_or6fupo09amo88im0rekshjrk324&expires=1670457600&signature=1709088c779d0b1c2bdc76001f02eefc1da6e89d"
+        },
+        "question": "Hi - I would appreciate some suggestions of what shrub this is - i saw it in a local park in Virginia and would like to consider it for my back yard. \n\nthanks for your help, Deborah ",
+        "answer": [
+            {
+                "attachments": [
+                    "https://ask2.extension.org/file.php?key=ld41q2mtm-kr0ruoxnstwdjjucc4yy1m&expires=1670457600&signature=c7157e8c3d73c04ef7e4671848eaa286daf1836d"
+                ]
+            },
+            {
+                "response": "This appears to be a variety of Crepemyrtle (Lagerstroemia), though when out-of-bloom, we cannot tell which. (Even then, there's some overlap in varieties.) There are many varieties of dark-leaved crepemyrtles on the market nowadays that have been introduced in recent years. The main difference between them is flower color (red, white, several shades of pink, and shades of reddish-purple), though a few may have different mature sizes as well. They were introduced as having more multi-season interest due to the strikingly-colored foliage; some are purported to also have good resistance to powdery mildew and other leaf ailments. If the park staff don't know the variety planted, you could take a photo (or a flower sample, as photographs can distort the true color of things, if the nuance of the color matters) and bring it to a local nursery/garden center to see if it matches up with varieties they stock.<br><br>Some of the names we've seen of series of dark-leaved crepemyrtle include \"Black Diamond,\" \"Delta,\" and most recently, \"Thunderstruck.\" Their marketing names may differ from their true cultivar names, which are often an unpronounceable mix of letters and numbers; marketed names are often trademarked, but other sellers may be allowed to sell the plants under different trade names. In both cases, the actual cultivar name, written in single quotes, will be the same. This way you can be sure you're looking at the same plant, even if it's coming from different sources. Plant tags usually include the cultivar name even if they also print the trademarked name.<br><br>Miri",
+                "author": "Home and Garden Information Cent University of Maryland Extension"
+            }
+        ],
+        "species": "crepemyrtle (lagerstroemia)",
+        "category": "generic identification",
+        "qa_information": {
+            "image description": [],
+            "background info": "saw it in a local park in Virginia and would like to consider it for my back yard.",
+            "species": "crepemyrtle (lagerstroemia)"
+        },
+        "agmmu_question": {
+            "question": "What species of tree is shown in the image?",
+            "options": [
+                "crepemyrtle",
+                "magnolia",
+                "jacaranda",
+                "dogwood"
+            ],
+            "answer": "crepemyrtle",
+            "question_background": "The following question has this background information:\nbackground info: saw it in a local park in Virginia and would like to consider it for my back yard.\nlocation: Montgomery County,Maryland\ntime: 2020-01-09 16:12:48\n",
+            "letter": "A."
+        },
+        "qtype": "species",
+        "llm_answers": {
+            "gpt-4o-oeq": {
+                "answer": "Crape Myrtle",
+                "score": {
+                    "accuracy": 1
+                }
+            },
+            "gpt-4o-mcq": {
+                "answer": "A. crepemyrtle",
+                "score": {
+                    "accuracy": 1
+                }
+            }
+        }
+    },
+    {
+        "faq-id": 604115,
+        "title": "Can you identify this apple? #604115",
+        "created": "2019-10-25 01:42:46",
+        "updated": "2019-11-02 06:27:02",
+        "state": "Minnesota",
+        "county": "Otter Tail County",
+        "tags": [],
+        "attachments": {
+            "-1": "https://ask2.extension.org/file.php?key=0hlzegdcej4oqmuf5vbqhqmzb4xuc9ju&expires=1670457600&signature=58ff59e14c3233be0c2ce7fff70d6e0250a14164"
+        },
+        "question": "We have an apple tree, planted by my mother about 20 years ago (no more than 30, not less than 15). We don't know the variety, and mom has passed. It ripens late Sept. It is slightly mealy, medium sweet, with a slight tang. It becomes very soft when baked. The tree was likely bought in Otter Tail or Wadena county. Picture attached.",
+        "answer": {
+            "1": {
+                "response": "I wish I could answer your question but I cannot.  I am giving you a link to older varieties of apples.  Once you go through it, you will see why there are too many choices: <a href=\"https://www.epicgardening.com/heirloom-apples/\" target=\"_blank\" rel=\"nofollow\">https://www.epicgardening.com/heirloom-apples/</a>",
+                "author": "Barbara Harlan"
+            },
+            "2": {
+                "response": "Thank you for the attempt, I appreciate it.\u00a0<br><br>At the suggestion of an acquaintance, I tried an online tool called applename.com and it appears that we have a Newtown Pippin.<br><br>Thanks again!<br>Jenny N<br>",
+                "author": "The Question Asker"
+            }
+        },
+        "species": "apple",
+        "category": "generic identification",
+        "qa_information": {
+            "image description": [],
+            "background info": "The tree was planted about 20 years ago. It ripens late Sept. The tree was likely bought in Otter Tail or Wadena county.",
+            "species": "apple"
+        },
+        "agmmu_question": {
+            "question": "What species of fruit is shown in the image?",
+            "options": [
+                "peach",
+                "mango",
+                "apple",
+                "plum"
+            ],
+            "answer": "apple",
+            "question_background": "The following question has this background information:\nbackground info: The tree was planted about 20 years ago. It ripens late Sept. The tree was likely bought in Otter Tail or Wadena county.\nlocation: Otter Tail County,Minnesota\ntime: 2019-10-25 01:42:46\n",
+            "letter": "C."
+        },
+        "qtype": "species",
+        "llm_answers": {
+            "gpt-4o-oeq": {
+                "answer": "Apple",
+                "score": {
+                    "accuracy": 1
+                }
+            },
+            "gpt-4o-mcq": {
+                "answer": "C",
+                "score": {
+                    "accuracy": 1
+                }
+            }
+        }
+    },
+    {
+        "faq-id": 595139,
+        "title": "Caterpillar with a tail and one that has spikes #595139",
+        "created": "2019-09-07 16:54:58",
+        "updated": "2019-09-17 06:27:52",
+        "state": "Maryland",
+        "county": "Montgomery County",
+        "tags": [
+            "insect identification",
+            "caterpillar"
+        ],
+        "attachments": {
+            "-1": "https://ask2.extension.org/file.php?key=fqkwrxe0refp17vn02jfjllv8rg_tjnc&expires=1670457600&signature=05b3ed35b9bf0002ff98160b82ab210ee26d6a15"
+        },
+        "question": "Hi, would you identify this caterpillar? I live in Silver Spring zip 20904. ",
+        "answer": [
+            {
+                "attachments": [
+                    "https://ask2.extension.org/file.php?key=pgksn7yxmn_5bgi_l4axcpz6ogfaygzy&expires=1670457600&signature=c11c8d2dadc45a21a08f896b3e3b9d97eef72d56",
+                    "https://ask2.extension.org/file.php?key=bulg2uc5hfvkd_vywbxmldih5hs4twua&expires=1670457600&signature=aa704f3b475321a693764a8d6ced285468e04140"
+                ]
+            },
+            {
+                "response": "Left photo - looks like a white marked tussock moth caterpillar<br><br>Middle and right photo - looks like a Unicorn prominent<br><br>Marian<br><br><br>",
+                "author": "Home and Garden Information Cent University of Maryland Extension"
+            }
+        ],
+        "species": "caterpillar",
+        "category": "generic identification",
+        "qa_information": {
+            "image description": [],
+            "background info": "I live in Silver Spring zip 20904.",
+            "species": "caterpillar"
+        },
+        "agmmu_question": {
+            "question": "What species is shown in the image?",
+            "options": [
+                "millipede",
+                "earthworm",
+                "caterpillar",
+                "centipede"
+            ],
+            "answer": "caterpillar",
+            "question_background": "The following question has this background information:\nbackground info: I live in Silver Spring zip 20904.\nlocation: Montgomery County,Maryland\ntime: 2019-09-07 16:54:58\n",
+            "letter": "C."
+        },
+        "qtype": "species",
+        "llm_answers": {
+            "gpt-4o-oeq": {
+                "answer": "White-marked tussock moth.",
+                "score": {
+                    "accuracy": 0.5
+                }
+            },
+            "gpt-4o-mcq": {
+                "answer": "C. caterpillar",
+                "score": {
+                    "accuracy": 1
+                }
+            }
+        }
+    },
+    {
+        "faq-id": 809138,
+        "title": "Leaf attacked on Montmorency sherry #809138",
+        "created": "2022-09-02 02:11:32",
+        "updated": "2022-09-22 18:31:50",
+        "state": "Oregon",
+        "county": "Deschutes County",
+        "tags": [],
+        "attachments": {
+            "-1": "https://ask2.extension.org/file.php?key=_5w0ndjucp7ukboosmdki9swrrysft4q&expires=1670457600&signature=85bc8a2ac55009e2d1e1650bc3b11e05b49872ea"
+        },
+        "question": "Leaves exfoliated \u2014 what has attacked my montmorency cherry?? Formerly green and healthy\u2014 suddenly yellow, see through leaves and some leaves have dark mucous residue on upper surface.  Appreciate any help.",
+        "answer": [
+            {
+                "attachments": [
+                    "https://ask2.extension.org/file.php?key=zbckhvkqfraxqjy8gcesafnbswhub2p8&expires=1670457600&signature=f27d24c0f7cb5f4c4626c841e5334d45669f4522",
+                    "https://ask2.extension.org/file.php?key=gcpi7xffl1btoerncymshguleeo0rw-4&expires=1670457600&signature=0fbe2c2de30594676fe0ca8951e5e2def99e8732"
+                ]
+            },
+            {
+                "response": "Your images show extensive patches of skeletonization on many leaves of your cherry. There is also, as you mention, black globs on the leaves as well. In my experience with cherry on the west side of the Cascades we see this with an insect we call pear slug. The larvae look like slugs but it does not have anything to do with mollusks. I will refer this to an entomologist with east side experience. In the mean time, you read about these here:<br /> <a href=\"https://pnwhandbooks.org/insect/tree-fruit/cherry/cherry-cherry-slug-pear-slug-cherry-sawfly-pear-sawfly\">https://pnwhandbooks.org/insect/tree-fruit/cherry/cherry-cherry-slug-pear-slug-cherry-sawfly-pear-sawfly</a><br /> ",
+                "author": "Jay Pscheidt"
+            },
+            {
+                "response": "Greetings - looks like our team doesn't have additional details to share at this time, but here are some suggestions for managing cherry-slug\u00a0from the <a href=\"https://pnwhandbooks.org/insect/tree-fruit/cherry/cherry-cherry-slug-pear-slug-cherry-sawfly-pear-sawfly\" target=\"_blank\">PNW Insect Handbook</a>. These options are suitable for use in Oregon home gardens:\u00a0<strong><br /> </strong><br /> <strong>Management-cultural control</strong> - recommended for small infestations:\u00a0<br /> Home orchardists: Pick off individual larvae from infested leaves, or wash them off with a strong stream of water.<br /> <br /> <strong>Management-chemical control: HOME USE</strong><br /> Pesticides may\u00a0have risks to people, the environment, and non-target creatures including bees and beneficial insects. Try less toxic options first and follow all directions and precautions on the label. <ul><li>insecticidal soap-Some formulations OMRI-listed for organic use.</li><li>kaolin clay (Surround at Home)-Repels some insect pests when applied as a spray to leaves, stems, and fruit. OMRI-listed for organic use.</li><li>pyrethrin-Some formulations are OMRI-listed for organic use. Highly toxic to bees.</li><li>carbaryl-Highly toxic to bees.</li><li>esfenvalerate-Highly toxic to bees.</li><li>spinosad-Some formulations are OMRI-listed for organic use.</li></ul> <br /> ",
+                "author": "Elizabeth Records"
+            }
+        ],
+        "species": "montmorency cherry",
+        "category": "insects/pests control",
+        "qa_information": {
+            "insect/pest": [
+                "pear slug",
+                "cherry slug",
+                "cherry sawfly",
+                "pear sawfly"
+            ],
+            "image description": [
+                "yellow see-through leaves",
+                "dark mucous residue on upper surface of leaves",
+                "extensive patches of skeletonization on leaves",
+                "black globs on leaves"
+            ],
+            "management instructions": [
+                "pick off individual larvae from infested leaves",
+                "wash larvae off with a strong stream of water",
+                "use insecticidal soap",
+                "use kaolin clay",
+                "use pyrethrin",
+                "use carbaryl",
+                "use esfenvalerate",
+                "use spinosad"
+            ],
+            "background info": "leaves were formerly green and healthy",
+            "species": "montmorency cherry"
+        },
+        "agmmu_question": {
+            "question": "What insect is indicated by the image?",
+            "options": [
+                "pear slug",
+                "apple maggot",
+                "codling moth",
+                "plum curculio"
+            ],
+            "answer": "pear slug",
+            "question_background": "The following question has this background information:\nbackground info: leaves were formerly green and healthy\nspecies: montmorency cherry\nlocation: Deschutes County,Oregon\ntime: 2022-09-02 02:11:32\n",
+            "letter": "A."
+        },
+        "qtype": "insect/pest",
+        "llm_answers": {
+            "gpt-4o-oeq": {
+                "answer": "Cherry slug.",
+                "score": {
+                    "accuracy": 0.5
+                }
+            },
+            "gpt-4o-mcq": {
+                "answer": "A",
+                "score": {
+                    "accuracy": 1
+                }
+            }
+        }
+    },
+    {
+        "faq-id": 438482,
+        "title": "Camellia leaf burn #438482",
+        "created": "2018-01-22 01:24:15",
+        "updated": "2018-01-30 06:36:39",
+        "state": "Maryland",
+        "county": "St. Mary's County",
+        "tags": [
+            "shrub",
+            "abiotic issues",
+            "winter injury",
+            "camellia"
+        ],
+        "attachments": {
+            "-1": "https://ask2.extension.org/file.php?key=bdycik9ji-1neqatjaelz6fkhp-wbsjg&expires=1670371200&signature=59cb25dfcef882742e58cb154c463337720de2db"
+        },
+        "question": "With the recent sustained freezing temperatures, a couple of my camellias have suffered what looks like leaf burn (see photo attached).  First, will you please validate that the brown leaves are leaf burn?  Then, more importantly, is there anything I should do and how critical will this be for the long term health of the plant?",
+        "answer": {
+            "1": {
+                "response": "This looks like winter injury or leaf burn on your camellia. \u00a0There is nothing you need to do now. \u00a0Affected leaves will drop in the spring and you should see new growth. \u00a0You \u00a0will have to wait and see if the flower buds are affected. \u00a0Here is more information on winter injury. \u00a0Deep watering will also encourage deeper rooting during the growing season which will help reduce damage from moderately dry periods and frozen soil. \u00a0<a target=\"_blank\" rel=\"nofollow\" href=\"http://extension.umd.edu/hgic/winter-damage-trees-and-shrubs\">http://extension.umd.edu/hgic/winter-damage-trees-and-shrubs</a><br><br>mh<br><br>",
+                "author": "Home and Garden Information Cent University of Maryland Extension"
+            }
+        },
+        "species": "camellia",
+        "category": "environmental stress",
+        "qa_information": {
+            "disease/issue identification": "winter injury or leaf burn",
+            "symptom description": [
+                "brown leaves"
+            ],
+            "management instructions": [
+                "There is nothing to do now.",
+                "Affected leaves will drop in the spring and new growth should appear.",
+                "Deep watering will encourage deeper rooting during the growing season."
+            ],
+            "background info": "The camellias were recently exposed to sustained freezing temperatures.",
+            "species": "camellia"
+        },
+        "agmmu_question": {
+            "question": "What condition is depicted affecting the plant in the image?",
+            "options": [
+                "nutrient deficiency",
+                "fungal leaf spot",
+                "winter injury or leaf burn",
+                "overwatering damage"
+            ],
+            "answer": "winter injury or leaf burn",
+            "question_background": "The following question has this background information:\nbackground info: The camellias were recently exposed to sustained freezing temperatures.\nspecies: camellia\nlocation: St. Mary's County,Maryland\ntime: 2018-01-22 01:24:15\n",
+            "letter": "C."
+        },
+        "qtype": "disease/issue identification",
+        "llm_answers": {
+            "gpt-4o-oeq": {
+                "answer": "Cold damage.",
+                "score": {
+                    "accuracy": 1
+                }
+            },
+            "gpt-4o-mcq": {
+                "answer": "C.",
+                "score": {
+                    "accuracy": 1
+                }
+            }
+        }
+    },
+    {
+        "faq-id": 601280,
+        "title": "Tropical plant ID #601280",
+        "created": "2019-10-07 18:00:25",
+        "updated": "2019-10-16 06:27:13",
+        "state": "New York",
+        "county": "Onondaga County",
+        "tags": [],
+        "attachments": {
+            "-1": "https://ask2.extension.org/file.php?key=v3iuipx3do3ceed1ie-s7rxolcjxkgzc&expires=1670457600&signature=393f6a4037e0bf5ee110906803a6b465c2165f01"
+        },
+        "question": "While in Fla. I picked up a big seed (little smaller than a golf ball) at the base of this huge plant. It had big white sweet smelling flowers.\u00a0 It was in the landscape of a hotel.\u00a0 I potted it up, put outside in summer, and all I get are green varigated leaves. This is the 2 nd summer I've had it.\u00a0 Can you tell me what it is or could be?",
+        "answer": [
+            {
+                "attachments": [
+                    "https://ask2.extension.org/file.php?key=szy1kpx3do3ceed1ie-s7rxolcjxkgzc&expires=1670457600&signature=1b6f194e5e8393a123c093786963542647990859"
+                ]
+            },
+            {
+                "response": "It is hard to say without more plant parts but the bulblet you describe and the leaves could be a crinum. These are also called spider lilies and have fragrant, spidery or amaryllis-type flowers. There are numerous species and cultivars but the ones you saw in Florida are not likely to be hardy above zone 8 or\u00a09.",
+                "author": "The Question Asker"
+            }
+        ],
+        "species": "crinum",
+        "category": "generic identification",
+        "qa_information": {
+            "image description": [
+                "green varigated leaves"
+            ],
+            "background info": "The seed was picked up at the base of a huge plant in the landscape of a hotel in Florida. The seed was potted up and put outside in summer. This is the 2nd summer the plant has been had.",
+            "species": "crinum"
+        },
+        "agmmu_question": {
+            "question": "What species of plant is shown in the image?",
+            "options": [
+                "narcissus",
+                "lilium",
+                "crinum",
+                "amaryllis"
+            ],
+            "answer": "crinum",
+            "question_background": "The following question has this background information:\nbackground info: The seed was picked up at the base of a huge plant in the landscape of a hotel in Florida. The seed was potted up and put outside in summer. This is the 2nd summer the plant has been had.\nlocation: Onondaga County,New York\ntime: 2019-10-07 18:00:25\n",
+            "letter": "C."
+        },
+        "qtype": "species",
+        "llm_answers": {
+            "gpt-4o-oeq": {
+                "answer": "Variegated Yucca",
+                "score": {
+                    "accuracy": 0
+                }
+            },
+            "gpt-4o-mcq": {
+                "answer": "C",
+                "score": {
+                    "accuracy": 1
+                }
+            }
+        }
+    }
+]

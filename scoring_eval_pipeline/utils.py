@@ -58,43 +58,8 @@ def add_item_to_json(file_path, new_item):
         json.dump(data, file, indent=4)
 
 
-def get_page_content(js):
-    content = {
-        'content': f"{js['title']} \n  Question Asker: \n {js['question']}",
-        'img_links': [],
-        'faq-id': js['faq-id'],
-        'location': f"{js['state']}, {js['county']}"
-    }
-
-    if isinstance(js['answer'], list):
-        answers = js['answer']
-    else:
-        answers = js['answer'].values()
-    
-    responses = ""
-    for answer in answers:
-        content['img_links'].extend(answer.get('attachments', []))
-        if "author" in answer:
-            response_role = "Question Asker" if answer['author'] == "The Question Asker" else "Expert"
-        else:
-            response_role = ""
-        if "response" in answer:
-            clean_response = bs(answer['response'], "html.parser").get_text().strip()
-        else:
-            clean_response = ""
-    
-        responses += f"\n{response_role}:\n{clean_response}\n"
-
-    content['content'] += responses
-
-    if 'attachments' in js:
-        content['img_links'].extend(js['attachments'].values())
-
-    return content
-
 def clean_response(response):
     response = re.sub(r"([a-zA-Z])'(s|t|m|r|ve|d|ll)", r"\1'\2", response)
-    # response = re.sub(r'"', r'\\"', response)
     response = response.replace("'", '"')
     response = re.sub(r"^```json|```$", "", response, flags=re.MULTILINE)
 
@@ -109,7 +74,7 @@ def encode_image(image_path):
 
 def chat_gpt(system, prompt, image_path=None):
     client = OpenAI(
-        api_key='XXXX',
+        api_key='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',
     )
 
     message = create_message(system, prompt, image_path)
@@ -191,4 +156,3 @@ class ModelHandler:
         response = self.tokenizer.batch_decode(generated_ids, skip_special_tokens=True)[0]
         
         return response
-handler = ModelHandler()

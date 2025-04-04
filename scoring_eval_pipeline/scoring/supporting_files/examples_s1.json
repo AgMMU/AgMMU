@@ -1,0 +1,86 @@
+{
+    "management instructions":[
+    
+{
+    
+    "actual":"To manage velvetleaf and prevent it from going to seed, implement these strategies:\n\n1. **Early Removal:** Hand-pull or hoe young plants before they flower.\n2. **Mulching:** Apply a thick layer of mulch to suppress seedling emergence.\n3. **Tillage:** Regularly till the soil to disrupt seedling establishment.\n4. **Herbicides:** Use appropriate pre- or post-emergent herbicides if needed.\n5. **Crop Rotation:** Plant competitive crops that can outgrow and suppress velvetleaf growth.\n\nThese methods help control velvetleaf effectively and prevent its spread",
+   
+    "split": ["**Early Removal:** Hand-pull or hoe young plants before they flower.", "**Herbicides:** Use appropriate pre- or post-emergent herbicides if needed."," **Mulching:** Apply a thick layer of mulch to suppress seedling emergence.","**Tillage:** Regularly till the soil to disrupt seedling establishment.","**Crop Rotation:** Plant competitive crops that can outgrow and suppress velvetleaf growth"]
+},
+{
+    "input": "symptom description - raised, furry, brown growths on leaves, species - smoke bush",
+    "actual": "The raised, furry, brown growths on your smoke bush are likely caused by fungal infections or pests.\n\nTo manage this issue:\n\n1. **Prune Affected Leaves:** Remove and dispose of affected leaves to prevent spread.\n2. **Improve Air Circulation:** Ensure good spacing around the plant.\n3. **Avoid Overhead Watering:** Water at the base to keep leaves dry.\n4. **Apply Fungicide:** Use a suitable fungicide if the issue persists.\n5. **Monitor Regularly:** Check for any signs of recurrence or spread.\n\nIf the problem continues, consult with a local extension office or horticulturist.",
+    "split": ["**Prune Affected Leaves:** Remove and dispose of affected leaves to prevent spread.","**Apply Fungicide:** Use a suitable fungicide if the issue persists.","**Improve Air Circulation:** Ensure good spacing around the plant.", "**Avoid Overhead Watering:** Water at the base to keep leaves dry.","**Monitor Regularly:** Check for any signs of recurrence or spread"]
+},
+{
+    "input": "image description - small leafed ground cover with 5-lobed leaves less than 1cm across and round stems, species - hydrocotyle spp. (pennywort or dollarweed)",
+    "actual": "To manage hydrocotyle spp. (pennywort or dollarweed) effectively:\n\n1. **Cultural Methods**:\n   - Improve lawn drainage to reduce moisture.\n   - Mow grass at a higher setting to shade out weeds.\n   - Hand-pull weeds, ensuring complete root removal.\n\n2. **Mulching**:\n   - Apply a thick layer of mulch in stone areas to suppress growth.\n\n3. **Selective Herbicides**:\n   - Use selective post-emergent herbicides labeled for pennywort, complying with local pesticide regulations.\n   - Spot treat to minimize impact on desirable plants.\n\n4. **Regular Maintenance**:\n   - Maintain healthy lawn practices to prevent weed proliferation.",
+    "split":[ "Improve lawn drainage to reduce moisture.","Mow grass at a higher setting to shade out weeds.","Spot treat to minimize impact on desirable plants.","Use selective post-emergent herbicides labeled for pennywort, complying with local pesticide regulations.\n ","Hand-pull weeds, ensuring complete root removal", "**Mulching**: Apply a thick layer of mulch in stone areas to suppress growth.",
+            "**Regular Maintenance**: Maintain healthy lawn practices to prevent weed proliferation."
+        ]
+       
+},
+{
+    "input": "the manzanita tree in the image shows spots on leaves and browning, with leaves dying from the top on the fresh growth. based on the symptoms visible in the image, what steps can be taken to effectively manage this issue?",
+        "expected": "limit the infection by cleaning up old leaves from around the trees, avoid overhead irrigation, prune and space the trees for good air circulation, spray new leaves in spring with a fungicide like immunox or daconil",
+    "actual": "The symptoms suggest a possible fungal infection, such as leaf spot disease. Here are some steps to manage the issue:\n\n1. **Pruning**: Remove and dispose of affected leaves and branches to prevent further spread.\n2. **Sanitation**: Clean up fallen leaves and debris around the base of the tree.\n3. **Watering**: Water at the base and avoid overhead watering to reduce humidity.\n4. **Air Circulation**: Improve air circulation by thinning dense areas.\n5. **Fungicide**: Consider applying a suitable fungicide, following label instructions.\n\nConsistently monitor the tree for improved health. If symptoms persist, consult a local arborist or extension service for further advice.",
+    "split": [
+        "**Pruning**: Remove and dispose of affected leaves and branches to prevent further spread.",
+         "**Sanitation**: Clean up fallen leaves and debris around the base of the tree.",
+         "**Watering**: Water at the base and avoid overhead watering to reduce humidity.","**Pruning**: Remove and dispose of affected leaves and branches to prevent further spread.",
+            "**Fungicide**: Consider applying a suitable fungicide, following label instructions."]
+}
+
+
+],
+    "symptom/visual description":[
+        {
+            "input": "what is the visual characteristic of the yarrow plant in the image?",
+            "actual": "The yarrow plant in the image has feathery, fern-like leaves.",
+            "expected": "looks like a fern",
+            "split": ["The yarrow plant in the image has feathery, fern-like leaves."]
+               
+        },
+        {
+            "input": "what unusual feature is present on the box elder tree in the image?",
+            "actual": "The unusual feature on the box elder tree is the presence of a bug, likely a boxelder bug, near the leaves and seeds.",
+            "expected": "bugs covering a tree with winged seeds (samaras)",
+            "split": ["presence of a bug, likely a boxelder bug, near the leaves and seeds."]
+
+            
+        },
+        {
+
+            "actual": "The image features several ripe tomatoes of varying sizes and shapes, predominantly red in color. Some tomatoes show slight imperfections and greenish spots, indicating they may not be perfectly ripe. The background appears to be a flat surface, possibly a table or countertop.",
+            "expected": "light lawn patches with seeds",
+            "split": ["ripe tomatoes of varying sizes and shapes","predominantly red in color","Some tomatoes show slight imperfections and greenish spots"]
+            
+        },
+        {
+            "input": "what symptoms are visible on the pear tree in the image?",
+            "actual": "I'm unable to see any symptoms on the pear tree in the image provided. If you have specific symptoms you're concerned about, consider describing them for further assistance.",
+            "expected": "black spots, dead buds covered with rust and orange goo",
+            "split": []
+              
+        },
+        {
+            "input": "what is the notable characteristic of the geranium sibiricum in the image?",
+            "actual": "The notable characteristic of Geranium sibiricum in the image is its small, delicate, pinkish-purple flower with veined petals.",
+            "expected": "geranium type plant growing aggressively in patches and in cracks in pavement",
+            "split": ["small pinkish-purple flower with veined petals."]
+        },
+        {
+         "input": "what are the visible signs on the milkweed plant in the image?",
+        "expected": "large beetle, wilting milkweed leaves, curled up milkweed plant",
+        "actual": "The milkweed plant displays drooping leaves and clusters of browning flowers or seed pods.",
+        "split": [  "drooping leaves",
+                    "clusters of browning flowers or seed pods."
+                ]
+              
+            
+        }
+        
+
+
+    ]
+}
