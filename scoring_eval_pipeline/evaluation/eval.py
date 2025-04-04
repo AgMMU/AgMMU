@@ -5,8 +5,8 @@ import os
 import random
 from datetime import datetime
 import sys
-os.chdir('//home/agauba/ICCV/AgMMU/scoring_eval_pipeline')
-sys.path.append('/home/agauba/ICCV/AgMMU/scoring_eval_pipeline') 
+os.chdir('AgMMU/scoring_eval_pipeline')
+sys.path.append('AgMMU/scoring_eval_pipeline') 
 import utils 
 
 def format_options(q):
