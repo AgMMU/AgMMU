@@ -132,10 +132,9 @@ The `--output_file` will contain:
 ### 3.5 Installation
 
 We only use the most common libraries in python and deep learning. If you have any issues, please remember to install the dependencies of:
-* xxx for xxx
-* xxx for xxx
-* xxx for xxx
-
+```bash
+pip install transformers torch openai tqdm Pillow requests python-dotenv beautifulsoup4
+```
 ## 4. Citations
 
 If you find our dataset useful, please cite our paper:
