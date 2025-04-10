@@ -4,8 +4,8 @@
 </h1>
 
 <div class="is-size-5 publication-authors">
-  <span class="author-block">Aruna Gauba<sup>1,3</sup>*,</span>
-  <span class="author-block">Irene Pi<sup>1,2</sup>*,</span>
+  <span class="author-block">Aruna Gauba<sup>1,2</sup>*,</span>
+  <span class="author-block">Irene Pi<sup>1,3</sup>*,</span>
   <span class="author-block">
     <a href="https://yunzeman.github.io/" style="text-decoration:color: inherit;" target="_blank">Yunze Man<sup>1</sup>†</a>,
   </span>
@@ -21,7 +21,7 @@
 </div>
 
 
-$^1$ University of Illinois at Urbana-Champaign, $^2$ Rice University, $^3$ Carnegie Mellon University
+$^1$University of Illinois at Urbana-Champaign, $^2$Rice University, $^3$Carnegie Mellon University
 
 $^*$ Equal contribution, $^{†}$ Project Lead
 
