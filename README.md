@@ -21,7 +21,7 @@
 </div>
 
 
-$^1$University of Illinois at Urbana-Champaign, $^2$Rice University, $^3$Carnegie Mellon University
+<sup>1</sup>University of Illinois at Urbana-Champaign, <sup>2</sup>Rice University, <sup>3</sup>Carnegie Mellon University
 
 $^*$ Equal contribution, $^{†}$ Project Lead
 
