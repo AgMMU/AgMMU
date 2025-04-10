@@ -4,24 +4,24 @@
 </h1>
 
 <div class="is-size-5 publication-authors">
-  <span class="author-block">Aruna Gauba*<sup>1</sup>,</span>
-  <span class="author-block">Irene Pi*<sup>2</sup>,</span>
+  <span class="author-block">Aruna Gauba<sup>1,3</sup>*,</span>
+  <span class="author-block">Irene Pi<sup>1,2</sup>*,</span>
   <span class="author-block">
-    <a href="https://yunzeman.github.io/" style="text-decoration:color: inherit;" target="_blank">Yunze Man†<sup>3</sup></a>,
+    <a href="https://yunzeman.github.io/" style="text-decoration:color: inherit;" target="_blank">Yunze Man<sup>1</sup>†</a>,
   </span>
   <span class="author-block">
-    <a href="https://ziqipang.github.io/" style="text-decoration:color: inherit;" target="_blank">Ziqi Pang†<sup>3</sup></a>,
+    <a href="https://ziqipang.github.io/" style="text-decoration:color: inherit;" target="_blank">Ziqi Pang<sup>1</sup>†</a>,
   </span>
   <span class="author-block">
-    <a href="https://vikram.cs.illinois.edu/" style="text-decornone; color: inherit;">Vikram S. Adve<sup>3</sup></a>,
+    <a href="https://vikram.cs.illinois.edu/" style="text-decornone; color: inherit;">Vikram S. Adve<sup>1</sup></a>,
   </span>
   <span class="author-block">
-    <a href="https://yxw.cs.illinois.edu/" style="text-decornone; color: inherit;">Yu-Xiong Wang<sup>3</sup></a>
+    <a href="https://yxw.cs.illinois.edu/" style="text-decornone; color: inherit;">Yu-Xiong Wang<sup>1</sup></a>
   </span>
 </div>
 
 
-$^1$ Rice University, $^2$ Carnegie Mellon University, $^3$ University of Illinois at Urbana-Champaign
+$^1$ University of Illinois at Urbana-Champaign, $^2$ Rice University, $^3$ Carnegie Mellon University
 
 $^*$ Equal contribution, $^{†}$ Project Lead
 
