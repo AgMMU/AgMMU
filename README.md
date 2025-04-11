@@ -133,7 +133,7 @@ The `--output_file` will contain:
 
 We only use the most common libraries in python and deep learning. If you have any issues, please remember to install the dependencies of:
 ```bash
-pip install transformers torch openai tqdm Pillow requests python-dotenv beautifulsoup4
+pip install transformers==4.37.2 torch==2.1.2 openai==1.35.13 tqdm==4.66.4 Pillow==10.3.0 requests==2.32.3 python-dotenv==1.0.1 beautifulsoup4==4.12.3
 ```
 ## 4. Citations
 
