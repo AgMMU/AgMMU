@@ -25,7 +25,7 @@
 
 $^*$ Equal contribution, $^{†}$ Project Lead
 
-[[`Project Page`](https://agmmu.github.io/)][[`Paper`](https://arxiv.org/abs/2504.01611)][[`Huggingface Dataset`](https://huggingface.co/datasets/AgMMU/AgMMU_v1)][[`AIFARM Demo from UIUC`](https://uiuc.chat/cropwizard-1.5)]
+[[`Project Page`](https://agmmu.github.io/)][[`Paper`](https://arxiv.org/abs/2504.10568)][[`Huggingface Dataset`](https://huggingface.co/datasets/AgMMU/AgMMU_v1)][[`AIFARM Demo from UIUC`](https://uiuc.chat/cropwizard-1.5)]
 
 
 ## 1. Introduction to AgMMU
@@ -143,7 +143,7 @@ If you find our dataset useful, please cite our paper:
 @article{gauba2025agmmu,
   title={AgMMU: A Comprehensive Agricultural Multimodal Understanding and Reasoning Benchmark},
   author={Gauba, Aruna and Pi, Irene and Man, Yunze and Pang, Ziqi and Adve, Vikram S and Wang, Yu-Xiong},
-  journal={arXiv preprint arXiv:},
+  journal={arXiv preprint arXiv:2504.10568},
   year={2025}
 }
 ```
