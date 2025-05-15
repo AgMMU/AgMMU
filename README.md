@@ -4,24 +4,30 @@
 </h1>
 
 <div class="is-size-5 publication-authors">
-  <span class="author-block">Aruna Gauba<sup>1,2</sup>*,</span>
-  <span class="author-block">Irene Pi<sup>1,3</sup>*,</span>
   <span class="author-block">
-    <a href="https://yunzeman.github.io/" style="text-decoration:color: inherit;" target="_blank">Yunze Man<sup>1</sup>†</a>,
+    <a href="https://github.com/AgMMU/AgMMU" style="text-decoration:color: inherit;" target="_blank">Aruna Gauba<sup>1,2,5</sup>*</a>,
   </span>
   <span class="author-block">
-    <a href="https://ziqipang.github.io/" style="text-decoration:color: inherit;" target="_blank">Ziqi Pang<sup>1</sup>†</a>,
+    <a href="https://github.com/AgMMU/AgMMU" style="text-decoration:color: inherit;" target="_blank">Irene Pi<sup>1,3,5</sup>*</a>,
   </span>
   <span class="author-block">
-    <a href="https://vikram.cs.illinois.edu/" style="text-decornone; color: inherit;">Vikram S. Adve<sup>1</sup></a>,
+    <a href="https://yunzeman.github.io/" style="text-decoration:color: inherit;" target="_blank">Yunze Man<sup>1,4,5</sup>†</a>,
   </span>
   <span class="author-block">
-    <a href="https://yxw.cs.illinois.edu/" style="text-decornone; color: inherit;">Yu-Xiong Wang<sup>1</sup></a>
+    <a href="https://ziqipang.github.io/" style="text-decoration:color: inherit;" target="_blank">Ziqi Pang<sup>1,4,5</sup>†</a>,
+  </span>
+  <span class="author-block">
+    <a href="https://vikram.cs.illinois.edu/" style="text-decornone; color: inherit;">Vikram S. Adve<sup>1,4,5</sup></a>,
+  </span>
+  <span class="author-block">
+    <a href="https://yxw.cs.illinois.edu/" style="text-decornone; color: inherit;">Yu-Xiong Wang<sup>1,4,5</sup></a>
   </span>
 </div>
 
 
 <sup>1</sup>University of Illinois at Urbana-Champaign, <sup>2</sup>Rice University, <sup>3</sup>Carnegie Mellon University
+<br><sup>4</sup>AIFARMS, <sup>5</sup>Center for Digital Agriculture at UIUC
+
 
 $^*$ Equal contribution, $^{†}$ Project Lead
 
@@ -30,13 +36,14 @@ $^*$ Equal contribution, $^{†}$ Project Lead
 
 ## 1. Introduction to AgMMU
 
-AgMMU is a multimodal knowledge-intensive dataset with the expertise of agricultural domain data. Vision-language models (VLMs) have to observe the details of images and provide factually precise answers. Enabled by real-world user-expert conversations, AgMMU features 3390 open-ended questions for factual questions (OEQs), 5793 multiple-choice evaluation like conventional vision-language benchmarks (MCQs), and an agricultural knowledge base with 205,399 pieces of facts for model fine-tuning. We hope AgMMU can benefit both knowledge-intensive VLMs and the social good of agriculture.
+AgMMU is a challenging real‑world benchmark for evaluating and advancing vision-language models (VLMs) in the knowledge‑intensive domain of agriculture. Unlike prior datasets that rely on crowdsourced prompts, AgMMU is distilled from **116231 authentic dialogues** between everyday growers and *USDA-authorized Cooperative Extension experts*. 
+Through a three‑stage pipeline: automated knowledge extraction, QA generation, and human verification, we construct (i) **AgMMU**, an *evaluation set* of 746 multiple‑choice questions (MCQs) and 746 open‑ended questions (OEQs), and (ii) **AgBase**, a *development corpus* of 57,387 multimodal facts covering five high-stakes agricultural topics: insect identification, species identification, disease categorization, symptom description, and management instruction.
 
 <img src="assets/agmmu_overview_v2.png" alt="AgMMU Overview" style="width: 100%;">
 
-AgMMU is created to develop factually accurate VLMs following the principle of [SimeQA](https://openai.com/index/introducing-simpleqa/). For the research community, AgMMU uniquely features both close and open-ended questions, and a large-scale agricultural knowledge base for fine-tuning.
+AgMMU is created to develop factually accurate VLMs following the principle of [SimpleQA](https://openai.com/index/introducing-simpleqa/). For the research community, AgMMU uniquely features both close and open-ended questions, and a large-scale agricultural knowledge base for fine-tuning.
 
-<img src="assets/comparison_dataset.png" alt="Dataset Comparison" style="width: 60%;">
+<img src="assets/agmmu_objectives.png" alt="Dataset Comparison" style="width: 80%;">
 
 ## 2. Data Preparation
 
