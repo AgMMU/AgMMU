@@ -1,0 +1,298 @@
+{
+	"symptom/visual description": [
+		{
+			"actual": "The image features a tall tree with a mix of green foliage and some bare branches. The background is a clear blue sky. The tree appears to have healthy green leaves at the lower part, while the upper branches are more sparse and dry.",
+			"expected": [
+				"top of the tree is bare of needles"
+			],
+			"score": {
+				"correct": {
+					"upper branches are more sparse and dry": "top of the tree is bare of needles"
+				},
+				"incorrect": {
+
+				},
+				"partially correct": {
+
+				},
+				"missing": [
+
+				],
+				"irrelevant": [
+					"healthy green leaves at the lower part",
+					"tall tree with a mix of green foliage and some bare branches"
+				]
+			}
+		},
+		{
+			"actual": "The image features a variety of leaves in different colors and conditions. There are green leaves, some with yellowing edges, and a few that are brown and wilted. The overall composition shows a mix of healthy and unhealthy foliage, indicating a range of plant health. The background consists of more green leaves, creating a dense, leafy appearance.",
+			"expected": [
+				"leaves turning brown",
+				"leaves dying",
+				"new growth is dying"
+			],
+			"score": {
+				"correct": {
+					"brown and wilted leaves": "leaves turning brown"
+				},
+				"incorrect": {
+
+				},
+				"partially correct": {
+					"unhealthy foliage": "mix of healthy and unhealthy foliage"
+				},
+				"missing": [
+					"new growth is dying"
+				],
+				"irrelevant": [
+					"The background consists of more green leaves, creating a dense, leafy appearance.",
+					"There are green leaves, some with yellowing edges"
+				],
+				"repeat": {
+
+				}
+			}
+		},
+		{
+			"actual": "The image features several tall green plants with elongated, fleshy leaves. The leaves show signs of damage, including brown spots and edges, indicating possible disease or environmental stress. The plants have small clusters of yellowish flowers at the top. In the background, there is a maroon door and a welcome mat.",
+			"expected": [
+				"brown spots on leaves"
+			],
+			"score": {
+				"correct": {
+					"leaves show signs of damage, including brown spots and edges": "brown spots on leaves"
+				},
+				"incorrect": {
+
+				},
+				"partially correct": {
+
+				},
+				"missing": [
+
+				],
+				"irrelevant": [
+					"tall green plants with elongated, fleshy leaves",
+					"small clusters of yellowish flowers at the top"
+				]
+			}
+		},
+		{
+			"actual": "The image features green leaves of a tree, showcasing a variety of shapes and sizes. The leaves appear to have a glossy texture with visible veins and some light variations in color. The background includes a blurred view of a trunk and possibly other foliage, indicating a lush, green environment.",
+			"expected": [
+				"chlorosis"
+			],
+			"score": {
+				"correct": {
+
+				},
+				"incorrect": {
+
+				},
+				"partially correct": {
+					"some light variations in color": "chlorosis"
+				},
+				"missing": [
+
+				],
+				"irrelevant": [
+					"showcasing a variety of shapes and sizes",
+					"leaves appear to have a glossy texture",
+					"visible veins",
+					"background includes a blurred view of a trunk",
+					"possibly other foliage",
+					"green leaves of a tree"
+				]
+			}
+		},
+		{
+			"actual": "The image features a dense patch of green plants, likely lily of the valley, with broad leaves and small white flowers scattered throughout. The ground is covered with brown leaves, indicating a forested or natural environment.",
+			"expected": [
+				"hillside shaded with hemlock, spruce, and maple trees",
+				"lily of the valley plants",
+				"periwinkle vinca",
+				"ferns"
+			],
+			"score": {
+				"correct": {
+					"The image features a dense patch of green plants, likely lily of the valley,with broad leaves and small white flowers scattered throughout": "lily of the valley plants"
+				},
+				"incorrect": {
+
+				},
+				"partially correct": {
+
+				},
+				"missing": [
+					"hillside shaded with hemlock, spruce, and maple trees",
+					"periwinkle vinca",
+					"ferns"
+				],
+				"irrelevant": [
+					"ground is covered with brown leaves"
+				]
+			}
+		},
+		{
+			"actual": "The image features a lush green plant with broad, elongated leaves that have white edges. The plant is surrounded by small stones and is positioned near a wooden fence. There are also two neatly trimmed shrubs on either side of the plant, contributing to a well-maintained garden aesthetic. The ground is paved with square tiles.",
+			"expected": [
+				"spotting on front, outermost lower leaves"
+			],
+			"score": {
+				"correct": {
+
+				},
+				"incorrect": {
+
+				},
+				"partially correct": {
+
+				},
+				"missing": [
+					"spotting on front, outermost lower leaves"
+				],
+				"irrelevant": [
+					"lush green plant",
+					"broad, elongated leaves with white edges"
+				]
+			}
+		}
+	],
+	"management instructions": [
+		{
+			"actual": "To manage nutsedge, consider the following strategies:\n\n1. **Cultural Control**: Improve drainage and reduce soil compaction to make the environment less favorable for nutsedge growth. Regularly mow or cut the plants before they seed.\n\n2. **Mechanical Control**: Hand-pulling can be effective, but ensure you remove the entire root system to prevent regrowth. This may need to be repeated multiple times.\n\n3. **Chemical Control**: Use pre-emergent herbicides in early spring and post-emergent herbicides specifically labeled for nutsedge. Follow all application guidelines carefully.\n\n4. **Mulching**: Apply a thick layer of mulch to suppress growth and prevent light from reaching the nutsedge.\n\n5. **Monitoring**: Regularly check for new growth and address it promptly to prevent establishment.\n\nCombining these strategies will yield the best results in managing nutsedge effectively.",
+			"expected": [
+				"remove the entire plant (including the root/rhizome system) by digging around the plant\u2019s base.",
+				"A nonselective herbicide which contains glyphosate provides only marginal control."
+			],
+			"score": {
+				"correct": {
+					"**Mechanical Control**: Hand-pulling can be effective, but ensure you remove the entire root system to prevent regrowth. This may need to be repeated multiple times.": "remove the entire plant (including the root/rhizome system) by digging around the plant\u2019s base."
+				},
+				"incorrect": {
+
+				},
+				"partially correct": {
+					"**Chemical Control**: Use pre-emergent herbicides in early spring and post-emergent herbicides specifically labeled for nutsedge. Follow all application guidelines carefully.": "A nonselective herbicide which contains glyphosate provides only marginal control."
+				},
+				"missing": [
+
+				],
+				"irrelevant": [
+					"**Cultural Control**: Improve drainage and reduce soil compaction to make the environment less favorable for nutsedge growth. Regularly mow or cut the plants before they seed.",
+					"**Mulching**: Apply a thick layer of mulch to suppress growth and prevent light from reaching the nutsedge.",
+					"**Monitoring**: Regularly check for new growth and address it promptly to prevent establishment."
+				]
+			}
+		},
+		{
+			"actual": "To manage the issue with the Thuja Green Giant, consider the following strategies:\n\n1. **Improve Drainage**: Amend the soil with organic matter to enhance drainage and reduce moisture retention.\n2. **Prune Affected Areas**: Remove any dead or discolored foliage to improve air circulation and reduce disease risk.\n3. **Monitor Watering**: Ensure that the plants are not overwatered, especially during periods of heavy rain.\n4. **Fertilization**: Apply a balanced fertilizer in the spring to promote healthy growth.\n5. **Mulching**: Use mulch to regulate soil moisture and temperature, but keep it away from the base of the plants to prevent rot.\n\nRegular monitoring and adjustments based on weather conditions will also help maintain plant health.",
+			"expected": [
+				"water only when the soil is becoming relatively dry to the touch at a depth of six inches."
+			],
+			"score": {
+				"correct": {
+
+				},
+				"incorrect": {
+
+				},
+				"partially correct": {
+					"**Monitor Watering**: Ensure that the plants are not overwatered, especially during periods of heavy rain.": "water only when the soil is becoming relatively dry to the touch at a depth of six inches."
+				},
+				"missing": [
+
+				],
+				"irrelevant": [
+					"**Improve Drainage**: Amend the soil with organic matter to enhance drainage and reduce moisture retention.",
+					"**Prune Affected Areas**: Remove any dead or discolored foliage to improve air circulation and reduce disease risk.",
+					"**Fertilization**: Apply a balanced fertilizer in the spring to promote healthy growth.",
+					"**Mulching**: Use mulch to regulate soil moisture and temperature, but keep it away from the base of the plants to prevent rot."
+				]
+			}
+		},
+		{
+			"actual": "To manage the browning and leaf dropping of the maple tree, ensure consistent watering, especially during dry periods, as elevated planters can dry out quickly. Additionally, consider mulching around the base to retain moisture and improve soil health. Monitor for pests or diseases, and consult an arborist if issues persist.",
+			"expected": [
+				"Deep water every 2 to 3 weeks through dry summer months.",
+				"Irrigate the entire area underneath the canopy, plus 1 to 2 feet beyond.",
+				"Moisten the soil to at least 12 inches deep.",
+				"Determine irrigation runtime by testing soil moisture penetration."
+			],
+			"score": {
+				"correct": {
+
+				},
+				"incorrect": {
+
+				},
+				"partially correct": {
+					"Ensure consistent watering, especially during dry periods, as elevated planters can dry out quickly.": "Deep water every 2 to 3 weeks through dry summer months."
+				},
+				"missing": [
+					"Irrigate the entire area underneath the canopy, plus 1 to 2 feet beyond.",
+					"Moisten the soil to at least 12 inches deep.",
+					"Determine irrigation runtime by testing soil moisture penetration."
+				],
+				"irrelevant": [
+					"Consider mulching around the base to retain moisture and improve soil health.",
+					"Monitor for pests or diseases.",
+					"Consult an arborist if issues persist."
+				]
+			}
+		},
+		{
+			"actual": "To manage Cynanchum laeve (honeyvine/bluevine), consider the following strategies:\n\n1. **Mechanical Removal**: Cut and pull the vines, ensuring to remove as much of the root system as possible to prevent regrowth.\n\n2. **Herbicide Application**: Use a systemic herbicide containing glyphosate or triclopyr, applying it to freshly cut stems or foliage during the growing season for effective control.\n\n3. **Monitoring and Follow-Up**: Regularly check the area for new growth and reapply management strategies as needed.\n\n4. **Preventive Measures**: Promote native vegetation to outcompete the invasive species and reduce its spread.\n\nAlways follow local guidelines and regulations when using herbicides.",
+			"expected": [
+				"The plants have deep roots and should be dug up",
+				"or you can use chemical control"
+			],
+			"score": {
+				"correct": {
+					"**Mechanical Removal**: Cut and pull the vines, ensuring to remove as much of the root system as possible to prevent regrowth.": "The plants have deep roots and should be dug up",
+					"**Herbicide Application**: Use a systemic herbicide containing glyphosate or triclopyr, applying it to freshly cut stems or foliage during the growing season for effective control.": "or you can use chemical control"
+				},
+				"incorrect": {
+
+				},
+				"partially correct": {
+
+				},
+				"missing": [
+
+				],
+				"irrelevant": [
+					"**Monitoring and Follow-Up**: Regularly check the area for new growth and reapply management strategies as needed.",
+					"**Preventive Measures**: Promote native vegetation to outcompete the invasive species and reduce its spread."
+				]
+			}
+		},
+		{
+			"actual": "The recommended management strategy for garlic mustard includes:\n\n1. **Manual Removal**: Pull out the plants by hand, ensuring to remove the entire root system, especially before they set seed in late spring.\n2. **Regular Monitoring**: Check the area regularly for new growth and remove any emerging plants.\n3. **Mulching**: Apply mulch to suppress further growth and prevent seed germination.\n4. **Herbicide Application**: If necessary, consider using a targeted herbicide in the fall when native plants are dormant, following local guidelines.\n\nAlways ensure to dispose of removed plants properly to prevent re-establishment.",
+			"expected": [
+				"easily pulled by hand",
+				"remove them before they go to seed"
+			],
+			"score": {
+				"correct": {
+					"ensuring to remove the entire root system, especially before they set seed in late spring.": "remove them before they go to seed",
+					"**Manual Removal**: Pull out the plants by hand ": "easily pulled by hand"
+				},
+				"incorrect": {
+
+				},
+				"partially correct": {
+
+				},
+				"missing": [
+
+				],
+				"irrelevant": [
+					"**Regular Monitoring**: Check the area regularly for new growth and remove any emerging plants.",
+					"**Herbicide Application**: If necessary, consider using a targeted herbicide in the fall when native plants are dormant, following local guidelines.",
+					"**Mulching**: Apply mulch to suppress further growth and prevent seed germination."
+				]
+			}
+		}
+	]
+}
