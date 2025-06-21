@@ -6,9 +6,9 @@ import argparse
 import utils
 
 
-with open('scoring/supporting_files/multi_statement.json') as file:
+with open('scoring_eval_pipeline/supporting_files/multi_statement.json') as file:
     multi = json.load(file)
-with open('scoring/supporting_files/few_word_examples.json') as file:
+with open('scoring_eval_pipeline/supporting_files/few_word_examples.json') as file:
     few_word_examples = json.load(file)
 
 
