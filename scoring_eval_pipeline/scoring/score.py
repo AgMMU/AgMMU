@@ -3,21 +3,15 @@ import os
 import sys
 from statistics import harmonic_mean
 import argparse
-os.chdir('AgMMU/scoring_eval_pipeline')
-sys.path.append('AgMMU/scoring_eval_pipeline') 
 import utils
 
-handler = utils.ModelHandler()
 
-with open('AgMMU/scoring_eval_pipeline/scoring/supporting_files/examples_s1.json') as file:
-    examples_s1 = json.load(file)
-with open('AgMMU/scoring_eval_pipeline/scoring/supporting_files/examples_s2.json') as file:
-    examples_s2 = json.load(file)
-with open('AgMMU/scoring_eval_pipeline/scoring/supporting_files/few_word_examples.json') as file:
+with open('scoring/supporting_files/multi_statement.json') as file:
+    multi = json.load(file)
+with open('scoring/supporting_files/few_word_examples.json') as file:
     few_word_examples = json.load(file)
 
 
-# Scoring functions
 def score_pipeline(data, output):
     ids = []
     if os.path.exists(output):
@@ -30,26 +24,37 @@ def score_pipeline(data, output):
             continue
         try:
             for llm in q['llm_answers']:
-                if 'mcq' in llm:
-                    q['llm_answers'][llm]['score'] = score_mcq({q['agmmu_question']['letter']: 1}, q['llm_answers'][llm]['answer'])
-                elif q['qtype'] in ['management instructions', 'symptom/visual description']:
-                    qset = 'management instructions' if q['qtype'] == 'management instructions' else (
-                        "image description" if 'image description' in q['qa_information'] else 'symptom description'
-                    )
-                    if not isinstance(q['qa_information'][qset], list):
-                        print("not a list", qset, q['qa_information'][qset])
-                    q['llm_answers'][llm]['score'] = score_multi_statement(q['qtype'], q['llm_answers'][llm]['answer'], q['qa_information'][qset])
-                else:
-                    q['llm_answers'][llm]['score'] = score_few_word(
-                        q['agmmu_question']['question'],
-                        q['agmmu_question']['answer'],
-                        q['llm_answers'][llm]['answer'],
-                        q['qtype']
-                    )
+                # if "gpt" in llm:
+                #     continue
+                # question_block = q['agmmu_question']
+                question_block = q
+                try:
+                    if 'mcq' in llm:
+                        q['llm_answers'][llm]['score'] = score_mcq({question_block['letter']: 1}, q['llm_answers'][llm]['answer'])
+                    elif q['qtype'] in ['management instructions', 'symptom/visual description']:
+                        qset = 'management instructions' if q['qtype'] == 'management instructions' else (
+                            "image description" if 'image description' in q['qa_information'] else 'symptom description'
+                        )
+                        if not isinstance(q['qa_information'][qset], list):
+                            print("not a list", qset, q['qa_information'][qset])
+                        res = score_multi_statement(q['qtype'], q['llm_answers'][llm]['answer'], q['qa_information'][qset])
+                        q['llm_answers'][llm]['score'] = res
+
+                    else:
+                        q['llm_answers'][llm]['score'] = score_few_word(
+                            question_block['question'],
+                            question_block['answer'],
+                            q['llm_answers'][llm]['answer'],
+                            q['qtype']
+                        )
+
+                except Exception as e:
+                    print(f"error: {e}")
+                    continue
 
             utils.add_item_to_json(output, q)
         except Exception as e:
-            print("BAD", e, q['faq-id'])
+
             continue
 
 
@@ -83,57 +88,55 @@ def score_few_word(question, target, predicted_answer, qtype):
 
     Just return the letters "A", "B", "C", or "D", with no text around it.
     """
-    response = handler.generate_response(system, prompt)
+    response = utils.exponential_backoff(utils.chat_gpt, system, prompt,None)
+    print(prompt, response)
     filter_map = {"A": 1, "B": 0, "C": 0, "D": 0.5}
     return score_mcq(filter_map, response)
+def create_multi_examples(qtype,question):
+    st = ""
+    for i in multi[qtype]:
+        st += f"Gold Target:\n{i['expected']}\nPredicted Answer:\n{i['actual']}\nScoring:\n{i['score']}\n"
+    return st
 
 
-def score_multi_statement(qtype, predicted, expected_list):
-    rational = {"correct": {}, "incorrect": {}, "partially correct": {}, "missing": [], "irrelevant": [], "repeat": {}}
-    split = step_1(qtype, predicted)
-    split = utils.clean_response(split)
+def score_multi_statement(qtype, actual,expected):
+    
+    if qtype == 'management instructions':
+        question = "What is the recommended management strategy for the issue seen in this image?"
+    else:
+        question ="What visual features can be seen in this image?" 
+    examples = create_multi_examples(qtype,question)
+    system = f"""
+    Your job is to grade student answers from the agriculture and biology domain. Your job is to look at a question, a gold target, and a predicted answer, and then assign grades to each statemetn in the response of  ['correct','partially correct', 'incorrect', 'missing', 'irrelevant'].
+        - Correct is assigned to statements from the predicted answer that fully semantically map to a statement in the gold target.
+        - Partially correct is assigned to statements which partially semantically map to a statement in the gold target.
+        - Incorrect is assigned to statements from the predicted answer that directly semantically contradict a statement in the gold target.
+        - Missing is assigned to statements in the gold target which haven't been mapped within correct,partially correct, or incorrect. 
+        - Irrelevant is assigned to statements in the predicted answer which neither directly contradict nor corrospond in any way to statements in the gold target.
 
-    for statement in split:
-        max_score = -1
-        matched = ""
-        repeat = {}
-        for expected in expected_list:
-            s2 = step_2(qtype, statement, expected)
-            score = score_mcq({"A": 1, "B": 0, "C": -1, "D": 0.5}, s2)['accuracy']
-            if score > max_score:
-                max_score = score
-                matched = expected
-            elif score > 0:
-                repeat[expected] = (statement, score)
+    EACH STATEMENT IN THE GOLD TARGET AND PREDICTED ANSWER SHOULD BE ASSIGNED TO EXACTLY ONE OF THESE CATEGORIES.
+    Here are examples of correctly graded statements:
+    {examples}
 
-        if max_score == -1:
-            rational['irrelevant'].append(statement)
-        elif max_score == 1:
-            rational['correct'][statement] = matched
-        elif max_score == 0.5:
-            rational['partially correct'][statement] = matched
-        elif max_score == 0:
-            rational['incorrect'][statement] = matched
-
-    ls = list(rational['correct'].values()) + list(rational['partially correct'].values()) + list(rational['incorrect'].values())
-    for statement in expected_list:
-        if statement not in ls:
-            if statement in repeat:
-                rational['repeat'][statement] = repeat[statement]
-            else:
-                rational['missing'].append(statement)
-
-    return rational
+    Remember the following key points:
+        - a statement is always partially correct if it has ANY overlap in content with the target
 
 
-def step_1(qtype, actual):
-    examples = ""
-    system = "You are a helpful AI assistant."
-    for i, example in enumerate(examples_s1[qtype]):
-        examples += f"EXAMPLE {i + 1}:\n\nORIGINAL: \n{example['actual']}\n\nSPLIT: \n{example['split']}\n\n"
+    Question: {question}
+    Gold Target: {expected}
+    Predicted Answer: {actual}
 
-    prompt = f"Your job is to split up a {qtype} response into multiple stand-alone {qtype} statements. Only include statements with informational content, not fluff or unrelated text.\nHere are some examples:\n{examples}\nORIGINAL:{actual}\nSPLIT:\n"
-    return handler.generate_response(system, prompt)
+    Follow the format of the examples exactly. Output only a json with no additional text.
+    """
+
+    prompt = f"Question: {question}\nActual Statement:\n{actual}\n True Statement(s):\n{expected}\nScoring:\n"
+
+    response = utils.exponential_backoff(utils.chat_gpt, system, prompt,None)
+    print(response)
+    response = utils.clean_response(response)
+    
+
+    return response
 
 
 def score_mcq(target_map, predicted):
@@ -144,49 +147,14 @@ def score_mcq(target_map, predicted):
     return {"accuracy": 0}
 
 
-def step_2(qtype, actual, expected):
-    system = "You are a helpful AI assistant."
-    examples = ""
-    for i in examples_s2[qtype]:
-        examples += f"EXAMPLE:\nGOLD TARGET:\n{i['expected']}\nPREDICTED ANSWER:\n{i['actual']}\n{i['rational']}\n"
-
-    prompt = f"""
-     Your job is to grade student answers from the agriculture and biology domain. Your job is to look at a question, a gold target, and a predicted answer, and then assign a grade of either ['CORRECT', 'INCORRECT', 'IRRELEVANT', 'PARTIALLY CORRECT'].
-     First, I will give examples of each grade, and then you will grade a new example.
-     {examples}
-
-    Remember:
-        - Don't mark as incorrect unless it says something directly opposite to the target.
-        - Always partially correct if there is any overlap.
-
-    GOLD TARGET: {expected}
-    PREDICTED ANSWER: {actual}
-
-    Just return the letters "A", "B", "C", or "D", with no text around it.
-    """
-    return handler.generate_response(system, prompt)
-
-
-# Evaluation
-def move_duplicates_to_irrelevant(data):
-    if 'irrelevant' not in data:
-        data['irrelevant'] = []
-
-    priorities = ["correct", "partially correct", "incorrect"]
-    for i, higher in enumerate(priorities):
-        higher_values = set(data[higher].values())
-        for lower in priorities[i + 1:]:
-            to_move = [k for k, v in data[lower].items() if v in higher_values]
-            for k in to_move:
-                data['irrelevant'].append(k)
-                del data[lower][k]
-    return data
-
 
 def get_stats(data):
     scores = {}
     for i in data:
         for llm in i['llm_answers']:
+            # if 'llava' not in llm:
+            #     continue
+         
             scores.setdefault(llm, {}).setdefault(i['qtype'], {"correct": 0, "total": 0, "partial": 0, "num_questions": 0})
             metrics = scores[llm][i['qtype']]
 
@@ -201,8 +169,6 @@ def get_stats(data):
             else:
                 temp = i['llm_answers'][llm]['score']
                 target_num = list(temp['correct'].values()) + list(temp['partially correct'].values()) + list(temp['incorrect'].values()) + temp['missing']
-                if len(set(target_num)) < len(target_num):
-                    move_duplicates_to_irrelevant(temp)
                 num_statements = len(set(target_num))
                 if num_statements == 0:
                     continue
@@ -227,25 +193,18 @@ def calculate_harmonic_means(data):
     return result
 
 
-def main():
-    parser = argparse.ArgumentParser(description="Run AgMMU scoring pipeline.")
-    parser.add_argument('--input_file', type=str, required=True, help='Path to input evaluation JSON file.')
-    parser.add_argument('--output_file', type=str, required=True, help='Path to output scoring JSON file.')
-    args = parser.parse_args()
-
-    with open(args.input_file) as file:
-        data = json.load(file)
-
-    score_pipeline(data, args.output_file)
-
-
-    with open(args.output_file) as file:
-        archived_data = json.load(file)
-
-    stats = get_stats(archived_data)
-    harmonic_results = calculate_harmonic_means(stats)
-    print("Harmonic Means:", harmonic_results)
 
 
 if __name__ == "__main__":
-    main()
+    import argparse
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--input", "-i", required=True, help="Path to input JSON")
+    parser.add_argument("--output", "-o", required=True, help="Path to output JSON")
+    args = parser.parse_args()
+
+    with open(args.input) as f:
+        data = json.load(f)
+
+    score_pipeline(data, args.output)
+
