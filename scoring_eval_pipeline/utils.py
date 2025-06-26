@@ -80,7 +80,7 @@ def chat_gpt(system, prompt, image_path=None):
     message = create_message(system, prompt, image_path)
     
     response = client.chat.completions.create(
-        model="gpt-4o",
+        model="gpt-4.1",
         messages=message,
         temperature=0.3
     )
