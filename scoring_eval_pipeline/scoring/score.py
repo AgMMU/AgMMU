@@ -59,7 +59,7 @@ def score_pipeline(data, output):
 
 
 def score_few_word(question, target, predicted_answer, qtype):
-    if question.strip().lower().replace(".", "") == target.strip().lower().replace(".", ""):
+    if predicted_answer.strip().lower().replace(".", "") == target.strip().lower().replace(".", ""):
         return {"accuracy": 1}
 
     examples = ""
@@ -89,7 +89,7 @@ def score_few_word(question, target, predicted_answer, qtype):
     Just return the letters "A", "B", "C", or "D", with no text around it.
     """
     response = utils.exponential_backoff(utils.chat_gpt, system, prompt,None)
-    print(prompt, response)
+
     filter_map = {"A": 1, "B": 0, "C": 0, "D": 0.5}
     return score_mcq(filter_map, response)
 def create_multi_examples(qtype,question):
@@ -132,7 +132,7 @@ def score_multi_statement(qtype, actual,expected):
     prompt = f"Question: {question}\nActual Statement:\n{actual}\n True Statement(s):\n{expected}\nScoring:\n"
 
     response = utils.exponential_backoff(utils.chat_gpt, system, prompt,None)
-    print(response)
+
     response = utils.clean_response(response)
     
 
@@ -147,37 +147,74 @@ def score_mcq(target_map, predicted):
     return {"accuracy": 0}
 
 
-
-def get_stats(data):
-    scores = {}
+def get_stats(data_path):
+    with open(data) as f:
+        data_path = json.load(data)
+    scores = {} #to track scores by qtype
+    overall_scores = {}  # To track overall metrics across all question types
+    
     for i in data:
         for llm in i['llm_answers']:
-            # if 'llava' not in llm:
-            #     continue
-         
+            # Initialize per-category metrics
             scores.setdefault(llm, {}).setdefault(i['qtype'], {"correct": 0, "total": 0, "partial": 0, "num_questions": 0})
             metrics = scores[llm][i['qtype']]
+            
+            # Initialize overall metrics for this LLM if not exists
+            overall_scores.setdefault(llm, {"correct": 0, "total": 0, "partial": 0, "num_questions": 0})
+            overall_metrics = overall_scores[llm]
 
             if 'mcq' in llm or i['qtype'] not in ['management instructions', 'symptom/visual description']:
                 acc = i['llm_answers'][llm]['score'].get('accuracy', 0)
                 if acc == 1:
                     metrics['correct'] += 1
+                    overall_metrics['correct'] += 1
                 elif acc == 0.5:
                     metrics['partial'] += 1
+                    overall_metrics['partial'] += 1
                 metrics['total'] += 1
                 metrics['num_questions'] += 1
+                overall_metrics['total'] += 1
+                overall_metrics['num_questions'] += 1
             else:
                 temp = i['llm_answers'][llm]['score']
-                target_num = list(temp['correct'].values()) + list(temp['partially correct'].values()) + list(temp['incorrect'].values()) + temp['missing']
-                num_statements = len(set(target_num))
+                
+                # For each gold target, track the best matching prediction
+                gold_to_best_pred = {}
+                
+                # Process correct matches
+                for pred, gold in temp['correct'].items():
+                    if gold not in gold_to_best_pred:
+                        gold_to_best_pred[gold] = (pred, 1)  # (prediction, score: 1 for correct)
+                
+                # Process partially correct matches (only if no correct match exists for this gold)
+                for pred, gold in temp['partially correct'].items():
+                    if gold not in gold_to_best_pred:
+                        gold_to_best_pred[gold] = (pred, 0.5)  # (prediction, score: 0.5 for partial)
+                
+                # Count the best matches
+                correct_count = sum(1 for _, score in gold_to_best_pred.values() if score == 1)
+                partial_count = sum(1 for _, score in gold_to_best_pred.values() if score == 0.5)
+                
+                # Get all unique gold targets that should be matched
+                all_gold_targets = set(temp['correct'].values()) | set(temp['partially correct'].values()) | set(temp['incorrect'].values()) | set(temp['missing'])
+                num_statements = len(all_gold_targets) if all_gold_targets else 0
+                
                 if num_statements == 0:
                     continue
-                metrics['correct'] += len(temp['correct']) / num_statements
-                metrics['partial'] += len(temp['partially correct']) / num_statements
+                
+                # Update per-category metrics
+                metrics['correct'] += correct_count / num_statements
+                metrics['partial'] += partial_count / num_statements
                 metrics['total'] += 1
                 metrics['num_questions'] += 1
-    return scores
-
+                
+                # Update overall metrics
+                overall_metrics['correct'] += correct_count / num_statements
+                overall_metrics['partial'] += partial_count / num_statements
+                overall_metrics['total'] += 1
+                overall_metrics['num_questions'] += 1
+    
+    return scores, overall_scores
 
 def calculate_harmonic_means(data):
     result = {}
@@ -192,6 +229,16 @@ def calculate_harmonic_means(data):
             result[model][category] = harmonic_mean([metric1, metric2]) if metric1 > 0 and metric2 > 0 else 0
     return result
 
+def calculate_overall_accuracy(overall_scores):
+    result = {}
+    for model, metrics in overall_scores.items():
+        correct = metrics['correct']
+        total = metrics['num_questions']
+        partial = metrics.get('partial', 0)
+        metric1 = correct / total if total > 0 else 0
+        metric2 = correct / (total - partial) if (total - partial) > 0 else 0
+        result[model] = harmonic_mean([metric1, metric2]) if metric1 > 0 and metric2 > 0 else 0
+    return result
 
 
 
@@ -207,4 +254,22 @@ if __name__ == "__main__":
         data = json.load(f)
 
     score_pipeline(data, args.output)
+
+
+    stats, overall_stats = get_stats(args.output)
+    harmonic_means = calculate_harmonic_means(stats)
+    overall_accuracy = calculate_overall_accuracy(overall_stats)
+    
+    # Pretty-print results
+    print("\n=== Overall Accuracy Scores ===")
+    for model, score in overall_accuracy.items():
+        print(f"{model}: {score:.4f}")
+    
+    print("\n=== Harmonic Mean Scores by Category ===")
+    for model, categories in harmonic_means.items():
+        print(f"\nModel: {model}")
+        for category, score in categories.items():
+            print(f"  {category}: {score:.4f}")
+
+    
 
