@@ -37,6 +37,16 @@ with open(os.path.join(SCRIPT_DIR, 'supporting_files/few_word_examples.json')) a
     few_word_examples = json.load(file)
 
 
+def load_qa_information(source_path):
+    """Load qa_information from full dataset, indexed by faq-id."""
+    if not os.path.exists(source_path):
+        print(f"Warning: {source_path} not found, qa_information will not be available")
+        return {}
+    with open(source_path) as f:
+        data = json.load(f)
+    return {item['faq-id']: item.get('qa_information') for item in data if 'qa_information' in item}
+
+
 def score_single_question(q):
     """Score a single question. Returns the scored question or None on error."""
     try:
@@ -46,6 +56,9 @@ def score_single_question(q):
                 if 'mcq' in llm:
                     q['llm_answers'][llm]['score'] = score_mcq({question_block['letter']: 1}, q['llm_answers'][llm]['answer'])
                 elif q['qtype'] in ['management instructions', 'symptom/visual description']:
+                    if 'qa_information' not in q:
+                        print(f"Skipping {q['faq-id']}: missing qa_information for {q['qtype']}")
+                        continue
                     qset = 'management instructions' if q['qtype'] == 'management instructions' else (
                         "image description" if 'image description' in q['qa_information'] else 'symptom description'
                     )
@@ -299,14 +312,25 @@ if __name__ == "__main__":
     parser.add_argument("--output", "-o", required=True, help="Path to output JSON")
     parser.add_argument("--vertex", action="store_true", help="Use Vertex AI instead of API key")
     parser.add_argument("--workers", "-w", type=int, default=8, help="Number of parallel workers (default: 8)")
+    parser.add_argument("--qa-source", default="data/6k_evalset_wbg.json",
+                        help="Path to dataset with qa_information (default: data/6k_evalset_wbg.json)")
     args = parser.parse_args()
 
     # Set global Vertex AI config
-    global _use_vertex
     _use_vertex = args.vertex
 
     with open(args.input) as f:
         data = json.load(f)
+
+    # Merge qa_information from source dataset if missing
+    qa_lookup = load_qa_information(args.qa_source)
+    merged_count = 0
+    for item in data:
+        if 'qa_information' not in item and item['faq-id'] in qa_lookup:
+            item['qa_information'] = qa_lookup[item['faq-id']]
+            merged_count += 1
+    if merged_count > 0:
+        print(f"Merged qa_information for {merged_count} items from {args.qa_source}")
 
     score_pipeline(data, args.output, num_workers=args.workers)
 

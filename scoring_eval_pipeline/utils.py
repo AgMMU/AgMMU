@@ -192,4 +192,15 @@ def chat_gemini(system, prompt, image_path=None, model="gemini-3-flash-preview",
         )
 
     response = client.models.generate_content(model=model, contents=contents, config=config)
+    if response.text is None:
+        # Build diagnostic info
+        details = []
+        if hasattr(response, 'prompt_feedback') and response.prompt_feedback:
+            details.append(f"prompt_feedback={response.prompt_feedback}")
+        if hasattr(response, 'candidates') and response.candidates:
+            for i, c in enumerate(response.candidates):
+                details.append(f"candidate[{i}]: finish_reason={getattr(c, 'finish_reason', 'N/A')}, safety_ratings={getattr(c, 'safety_ratings', 'N/A')}")
+        else:
+            details.append("no candidates returned")
+        raise ValueError(f"Empty response from Gemini API: {'; '.join(details)}")
     return response.text.strip()
