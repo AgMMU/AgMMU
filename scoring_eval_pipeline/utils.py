@@ -16,11 +16,13 @@ import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer, pipeline
 from tqdm import tqdm
 
-def exponential_backoff(func, *args, max_retries=100, delay=1):
+load_dotenv()
+
+def exponential_backoff(func, *args, max_retries=100, delay=1, **kwargs):
     cnt = 0
     while cnt < max_retries:
         try:
-            return func(*args)
+            return func(*args, **kwargs)
         except RateLimitError as e:
             print(f"Rate limit reached: {e}. Retrying in {delay} seconds...")
             time.sleep(delay)
@@ -154,5 +156,51 @@ class ModelHandler:
         
 
         response = self.tokenizer.batch_decode(generated_ids, skip_special_tokens=True)[0]
-        
+
         return response
+
+
+def chat_gemini(system, prompt, image_path=None, model="gemini-3-flash-preview", response_schema=None, use_vertex=False):
+    """Call Gemini API with optional image and structured output support."""
+    from google import genai
+    from google.genai import types
+
+    if use_vertex:
+        # Vertex AI - uses ADC, requires global endpoint for Gemini 3 preview models
+        client = genai.Client(
+            vertexai=True,
+            project=os.environ.get("GOOGLE_CLOUD_PROJECT", "deep-learning-v1"),
+            location="global"
+        )
+    else:
+        # Free API tier with API key
+        client = genai.Client(api_key=os.environ.get("GEMINI_API_KEY"))
+
+    contents = []
+    if system:
+        contents.append(system + "\n\n")
+    if image_path:
+        img = Image.open(image_path)
+        contents.append(img)
+    contents.append(prompt)
+
+    config = None
+    if response_schema:
+        config = types.GenerateContentConfig(
+            response_mime_type='application/json',
+            response_schema=response_schema,
+        )
+
+    response = client.models.generate_content(model=model, contents=contents, config=config)
+    if response.text is None:
+        # Build diagnostic info
+        details = []
+        if hasattr(response, 'prompt_feedback') and response.prompt_feedback:
+            details.append(f"prompt_feedback={response.prompt_feedback}")
+        if hasattr(response, 'candidates') and response.candidates:
+            for i, c in enumerate(response.candidates):
+                details.append(f"candidate[{i}]: finish_reason={getattr(c, 'finish_reason', 'N/A')}, safety_ratings={getattr(c, 'safety_ratings', 'N/A')}")
+        else:
+            details.append("no candidates returned")
+        raise ValueError(f"Empty response from Gemini API: {'; '.join(details)}")
+    return response.text.strip()

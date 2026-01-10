@@ -1,0 +1,21 @@
+[project]
+name = "agmmu"
+version = "0.1.0"
+description = "AgMMU: Agricultural Multimodal Understanding Benchmark"
+requires-python = ">=3.10"
+dependencies = [
+    "google-genai>=1.0.0",
+    "python-dotenv>=1.0.0",
+    "pillow>=10.0.0",
+    "tqdm>=4.60.0",
+    "requests>=2.30.0",
+    "openai>=1.0.0",
+    "torch>=2.0.0",
+    "transformers>=4.30.0",
+    "beautifulsoup4>=4.12.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+]

@@ -1,61 +1,120 @@
 import json
 import os
+import re
 import sys
 from statistics import harmonic_mean
 import argparse
+from dotenv import load_dotenv
+from pydantic import BaseModel
+from concurrent.futures import ThreadPoolExecutor, as_completed
+import threading
+
+load_dotenv()
+
+# Global config for Vertex AI (set from main)
+_use_vertex = False
+_output_lock = threading.Lock()
+
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import utils
 
 
-with open('scoring_eval_pipeline/supporting_files/multi_statement.json') as file:
+class StatementMapping(BaseModel):
+    prediction: str
+    gold_target: str
+
+
+class MultiStatementScore(BaseModel):
+    correct: list[StatementMapping]
+    incorrect: list[StatementMapping]
+    partially_correct: list[StatementMapping]
+    missing: list[str]
+    irrelevant: list[str]
+
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+with open(os.path.join(SCRIPT_DIR, 'supporting_files/multi_statement.json')) as file:
     multi = json.load(file)
-with open('scoring_eval_pipeline/supporting_files/few_word_examples.json') as file:
+with open(os.path.join(SCRIPT_DIR, 'supporting_files/few_word_examples.json')) as file:
     few_word_examples = json.load(file)
 
 
-def score_pipeline(data, output):
-    ids = []
+def load_qa_information(source_path):
+    """Load qa_information from full dataset, indexed by faq-id."""
+    if not os.path.exists(source_path):
+        print(f"Warning: {source_path} not found, qa_information will not be available")
+        return {}
+    with open(source_path) as f:
+        data = json.load(f)
+    return {item['faq-id']: item.get('qa_information') for item in data if 'qa_information' in item}
+
+
+def score_single_question(q):
+    """Score a single question. Returns the scored question or None on error."""
+    try:
+        for llm in q['llm_answers']:
+            question_block = q
+            try:
+                if 'mcq' in llm:
+                    q['llm_answers'][llm]['score'] = score_mcq({question_block['letter']: 1}, q['llm_answers'][llm]['answer'])
+                elif q['qtype'] in ['management instructions', 'symptom/visual description']:
+                    if 'qa_information' not in q:
+                        print(f"Skipping {q['faq-id']}: missing qa_information for {q['qtype']}")
+                        continue
+                    qset = 'management instructions' if q['qtype'] == 'management instructions' else (
+                        "image description" if 'image description' in q['qa_information'] else 'symptom description'
+                    )
+                    if not isinstance(q['qa_information'][qset], list):
+                        print("not a list", qset, q['qa_information'][qset])
+                    res = score_multi_statement(q['qtype'], q['llm_answers'][llm]['answer'], q['qa_information'][qset])
+                    q['llm_answers'][llm]['score'] = res
+                else:
+                    q['llm_answers'][llm]['score'] = score_few_word(
+                        question_block['question'],
+                        question_block['answer'],
+                        q['llm_answers'][llm]['answer'],
+                        q['qtype']
+                    )
+            except Exception as e:
+                print(f"error scoring {q['faq-id']}: {e}")
+                continue
+        return q
+    except Exception as e:
+        print(f"error processing {q.get('faq-id')}: {e}")
+        return None
+
+
+def score_pipeline(data, output, num_workers=8):
+    ids = set()
     if os.path.exists(output):
         with open(output) as file:
             ids_file = json.load(file)
-        ids = [i['faq-id'] for i in ids_file]
+        ids = {i['faq-id'] for i in ids_file}
 
-    for q in data:
-        if q['faq-id'] in ids:
-            continue
-        try:
-            for llm in q['llm_answers']:
-                # if "gpt" in llm:
-                #     continue
-                # question_block = q['agmmu_question']
-                question_block = q
-                try:
-                    if 'mcq' in llm:
-                        q['llm_answers'][llm]['score'] = score_mcq({question_block['letter']: 1}, q['llm_answers'][llm]['answer'])
-                    elif q['qtype'] in ['management instructions', 'symptom/visual description']:
-                        qset = 'management instructions' if q['qtype'] == 'management instructions' else (
-                            "image description" if 'image description' in q['qa_information'] else 'symptom description'
-                        )
-                        if not isinstance(q['qa_information'][qset], list):
-                            print("not a list", qset, q['qa_information'][qset])
-                        res = score_multi_statement(q['qtype'], q['llm_answers'][llm]['answer'], q['qa_information'][qset])
-                        q['llm_answers'][llm]['score'] = res
+    # Filter to unscored questions
+    to_score = [q for q in data if q['faq-id'] not in ids]
 
-                    else:
-                        q['llm_answers'][llm]['score'] = score_few_word(
-                            question_block['question'],
-                            question_block['answer'],
-                            q['llm_answers'][llm]['answer'],
-                            q['qtype']
-                        )
+    if not to_score:
+        print("All questions already scored.")
+        return
 
-                except Exception as e:
-                    print(f"error: {e}")
-                    continue
+    from tqdm import tqdm
 
-            utils.add_item_to_json(output, q)
-        except Exception as e:
-
-            continue
+    if num_workers == 1:
+        # Sequential processing
+        for q in tqdm(to_score, desc="Scoring"):
+            result = score_single_question(q)
+            if result:
+                with _output_lock:
+                    utils.add_item_to_json(output, result)
+    else:
+        # Parallel processing
+        with ThreadPoolExecutor(max_workers=num_workers) as executor:
+            futures = {executor.submit(score_single_question, q): q for q in to_score}
+            for future in tqdm(as_completed(futures), total=len(futures), desc="Scoring"):
+                result = future.result()
+                if result:
+                    with _output_lock:
+                        utils.add_item_to_json(output, result)
 
 
 def score_few_word(question, target, predicted_answer, qtype):
@@ -88,7 +147,7 @@ def score_few_word(question, target, predicted_answer, qtype):
 
     Just return the letters "A", "B", "C", or "D", with no text around it.
     """
-    response = utils.exponential_backoff(utils.chat_gpt, system, prompt,None)
+    response = utils.exponential_backoff(utils.chat_gemini, system, prompt, None, use_vertex=_use_vertex)
 
     filter_map = {"A": 1, "B": 0, "C": 0, "D": 0.5}
     return score_mcq(filter_map, response)
@@ -99,66 +158,105 @@ def create_multi_examples(qtype,question):
     return st
 
 
-def score_multi_statement(qtype, actual,expected):
-    
+def score_multi_statement(qtype, actual, expected):
+
     if qtype == 'management instructions':
         question = "What is the recommended management strategy for the issue seen in this image?"
     else:
-        question ="What visual features can be seen in this image?" 
-    examples = create_multi_examples(qtype,question)
+        question = "What visual features can be seen in this image?"
+    examples = create_multi_examples(qtype, question)
     system = f"""
-    Your job is to grade student answers from the agriculture and biology domain. Your job is to look at a question, a gold target, and a predicted answer, and then assign grades to each statemetn in the response of  ['correct','partially correct', 'incorrect', 'missing', 'irrelevant'].
-        - Correct is assigned to statements from the predicted answer that fully semantically map to a statement in the gold target.
-        - Partially correct is assigned to statements which partially semantically map to a statement in the gold target.
-        - Incorrect is assigned to statements from the predicted answer that directly semantically contradict a statement in the gold target.
-        - Missing is assigned to statements in the gold target which haven't been mapped within correct,partially correct, or incorrect. 
-        - Irrelevant is assigned to statements in the predicted answer which neither directly contradict nor corrospond in any way to statements in the gold target.
+    Your job is to grade student answers from the agriculture and biology domain. Your job is to look at a question, a gold target, and a predicted answer, and then assign grades to each statement in the response of ['correct', 'partially_correct', 'incorrect', 'missing', 'irrelevant'].
+        - correct is assigned to statements from the predicted answer that fully semantically map to a statement in the gold target.
+        - partially_correct is assigned to statements which partially semantically map to a statement in the gold target.
+        - incorrect is assigned to statements from the predicted answer that directly semantically contradict a statement in the gold target.
+        - missing is assigned to statements in the gold target which haven't been mapped within correct, partially_correct, or incorrect.
+        - irrelevant is assigned to statements in the predicted answer which neither directly contradict nor correspond in any way to statements in the gold target.
 
     EACH STATEMENT IN THE GOLD TARGET AND PREDICTED ANSWER SHOULD BE ASSIGNED TO EXACTLY ONE OF THESE CATEGORIES.
     Here are examples of correctly graded statements:
     {examples}
 
     Remember the following key points:
-        - a statement is always partially correct if it has ANY overlap in content with the target
-
-
-    Question: {question}
-    Gold Target: {expected}
-    Predicted Answer: {actual}
-
-    Follow the format of the examples exactly. Output only a json with no additional text.
+        - a statement is always partially_correct if it has ANY overlap in content with the target
     """
 
-    prompt = f"Question: {question}\nActual Statement:\n{actual}\n True Statement(s):\n{expected}\nScoring:\n"
+    prompt = f"Question: {question}\nGold Target:\n{expected}\nPredicted Answer:\n{actual}"
 
-    response = utils.exponential_backoff(utils.chat_gpt, system, prompt,None)
+    response = utils.exponential_backoff(
+        utils.chat_gemini, system, prompt, None,
+        response_schema=MultiStatementScore, use_vertex=_use_vertex
+    )
 
-    response = utils.clean_response(response)
-    
+    # Parse JSON and convert from list format to expected dict format
+    data = json.loads(response)
+    result = {
+        "correct": {m["prediction"]: m["gold_target"] for m in data.get("correct", [])},
+        "incorrect": {m["prediction"]: m["gold_target"] for m in data.get("incorrect", [])},
+        "partially correct": {m["prediction"]: m["gold_target"] for m in data.get("partially_correct", [])},
+        "missing": data.get("missing", []),
+        "irrelevant": data.get("irrelevant", []),
+    }
+    return result
 
-    return response
+
+def extract_mcq_answer(text):
+    """Extract single letter answer from potentially verbose response."""
+    text = text.strip()
+
+    # Check if ends with single letter (often on own line)
+    lines = text.split('\n')
+    last_line = lines[-1].strip()
+    if last_line.upper().replace('.', '') in ['A', 'B', 'C', 'D']:
+        return last_line.upper().replace('.', '')
+
+    # Already a single letter
+    if text.upper().replace('.', '') in ['A', 'B', 'C', 'D']:
+        return text.upper().replace('.', '')
+
+    # Look for 'The answer is X' or 'correct answer is X'
+    match = re.search(r'(?:the\s+)?(?:correct\s+)?answer(?:\s+is)?[:\s]+\**([A-D])\**', text, re.IGNORECASE)
+    if match:
+        return match.group(1).upper()
+
+    # Look for **X** pattern - take the LAST one as it's usually the conclusion
+    matches = re.findall(r'\*\*([A-D])\*\*', text, re.IGNORECASE)
+    if matches:
+        return matches[-1].upper()
+
+    # First word/letter if starts with A-D
+    first = text.split()[0] if text.split() else ""
+    if first and first[0].upper() in ['A', 'B', 'C', 'D']:
+        return first[0].upper()
+
+    return None
 
 
 def score_mcq(target_map, predicted):
-    cleaned = predicted.split(" ")[0].strip().lower().replace(".", "")
-    for target in target_map:
-        if cleaned == target.strip(" ")[0].lower().replace(".", "").strip():
-            return {"accuracy": target_map[target]}
+    extracted = extract_mcq_answer(predicted)
+    if extracted:
+        for target in target_map:
+            if extracted == target.strip()[0].upper().replace(".", ""):
+                return {"accuracy": target_map[target]}
     return {"accuracy": 0}
 
 
 def get_stats(data_path):
-    with open(data) as f:
-        data_path = json.load(data)
+    with open(data_path) as f:
+        data = json.load(f)
     scores = {} #to track scores by qtype
     overall_scores = {}  # To track overall metrics across all question types
-    
+
     for i in data:
         for llm in i['llm_answers']:
+            # Skip if no score (scoring failed for this question)
+            if 'score' not in i['llm_answers'][llm]:
+                continue
+
             # Initialize per-category metrics
             scores.setdefault(llm, {}).setdefault(i['qtype'], {"correct": 0, "total": 0, "partial": 0, "num_questions": 0})
             metrics = scores[llm][i['qtype']]
-            
+
             # Initialize overall metrics for this LLM if not exists
             overall_scores.setdefault(llm, {"correct": 0, "total": 0, "partial": 0, "num_questions": 0})
             overall_metrics = overall_scores[llm]
@@ -243,28 +341,42 @@ def calculate_overall_accuracy(overall_scores):
 
 
 if __name__ == "__main__":
-    import argparse
-
     parser = argparse.ArgumentParser()
     parser.add_argument("--input", "-i", required=True, help="Path to input JSON")
     parser.add_argument("--output", "-o", required=True, help="Path to output JSON")
+    parser.add_argument("--vertex", action="store_true", help="Use Vertex AI instead of API key")
+    parser.add_argument("--workers", "-w", type=int, default=8, help="Number of parallel workers (default: 8)")
+    parser.add_argument("--qa-source", default="data/6k_evalset_wbg.json",
+                        help="Path to dataset with qa_information (default: data/6k_evalset_wbg.json)")
     args = parser.parse_args()
+
+    # Set global Vertex AI config
+    _use_vertex = args.vertex
 
     with open(args.input) as f:
         data = json.load(f)
 
-    score_pipeline(data, args.output)
+    # Merge qa_information from source dataset if missing
+    qa_lookup = load_qa_information(args.qa_source)
+    merged_count = 0
+    for item in data:
+        if 'qa_information' not in item and item['faq-id'] in qa_lookup:
+            item['qa_information'] = qa_lookup[item['faq-id']]
+            merged_count += 1
+    if merged_count > 0:
+        print(f"Merged qa_information for {merged_count} items from {args.qa_source}")
 
+    score_pipeline(data, args.output, num_workers=args.workers)
 
     stats, overall_stats = get_stats(args.output)
     harmonic_means = calculate_harmonic_means(stats)
     overall_accuracy = calculate_overall_accuracy(overall_stats)
-    
+
     # Pretty-print results
     print("\n=== Overall Accuracy Scores ===")
     for model, score in overall_accuracy.items():
         print(f"{model}: {score:.4f}")
-    
+
     print("\n=== Harmonic Mean Scores by Category ===")
     for model, categories in harmonic_means.items():
         print(f"\nModel: {model}")
