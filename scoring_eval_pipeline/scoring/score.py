@@ -1,5 +1,6 @@
 import json
 import os
+import re
 import sys
 from statistics import harmonic_mean
 import argparse
@@ -199,11 +200,44 @@ def score_multi_statement(qtype, actual, expected):
     return result
 
 
+def extract_mcq_answer(text):
+    """Extract single letter answer from potentially verbose response."""
+    text = text.strip()
+
+    # Check if ends with single letter (often on own line)
+    lines = text.split('\n')
+    last_line = lines[-1].strip()
+    if last_line.upper().replace('.', '') in ['A', 'B', 'C', 'D']:
+        return last_line.upper().replace('.', '')
+
+    # Already a single letter
+    if text.upper().replace('.', '') in ['A', 'B', 'C', 'D']:
+        return text.upper().replace('.', '')
+
+    # Look for 'The answer is X' or 'correct answer is X'
+    match = re.search(r'(?:the\s+)?(?:correct\s+)?answer(?:\s+is)?[:\s]+\**([A-D])\**', text, re.IGNORECASE)
+    if match:
+        return match.group(1).upper()
+
+    # Look for **X** pattern - take the LAST one as it's usually the conclusion
+    matches = re.findall(r'\*\*([A-D])\*\*', text, re.IGNORECASE)
+    if matches:
+        return matches[-1].upper()
+
+    # First word/letter if starts with A-D
+    first = text.split()[0] if text.split() else ""
+    if first and first[0].upper() in ['A', 'B', 'C', 'D']:
+        return first[0].upper()
+
+    return None
+
+
 def score_mcq(target_map, predicted):
-    cleaned = predicted.split(" ")[0].strip().lower().replace(".", "")
-    for target in target_map:
-        if cleaned == target.strip(" ")[0].lower().replace(".", "").strip():
-            return {"accuracy": target_map[target]}
+    extracted = extract_mcq_answer(predicted)
+    if extracted:
+        for target in target_map:
+            if extracted == target.strip()[0].upper().replace(".", ""):
+                return {"accuracy": target_map[target]}
     return {"accuracy": 0}
 
 
