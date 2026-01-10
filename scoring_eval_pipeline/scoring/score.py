@@ -5,8 +5,14 @@ from statistics import harmonic_mean
 import argparse
 from dotenv import load_dotenv
 from pydantic import BaseModel
+from concurrent.futures import ThreadPoolExecutor, as_completed
+import threading
 
 load_dotenv()
+
+# Global config for Vertex AI (set from main)
+_use_vertex = False
+_output_lock = threading.Lock()
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import utils
@@ -31,51 +37,70 @@ with open(os.path.join(SCRIPT_DIR, 'supporting_files/few_word_examples.json')) a
     few_word_examples = json.load(file)
 
 
-def score_pipeline(data, output):
-    ids = []
+def score_single_question(q):
+    """Score a single question. Returns the scored question or None on error."""
+    try:
+        for llm in q['llm_answers']:
+            question_block = q
+            try:
+                if 'mcq' in llm:
+                    q['llm_answers'][llm]['score'] = score_mcq({question_block['letter']: 1}, q['llm_answers'][llm]['answer'])
+                elif q['qtype'] in ['management instructions', 'symptom/visual description']:
+                    qset = 'management instructions' if q['qtype'] == 'management instructions' else (
+                        "image description" if 'image description' in q['qa_information'] else 'symptom description'
+                    )
+                    if not isinstance(q['qa_information'][qset], list):
+                        print("not a list", qset, q['qa_information'][qset])
+                    res = score_multi_statement(q['qtype'], q['llm_answers'][llm]['answer'], q['qa_information'][qset])
+                    q['llm_answers'][llm]['score'] = res
+                else:
+                    q['llm_answers'][llm]['score'] = score_few_word(
+                        question_block['question'],
+                        question_block['answer'],
+                        q['llm_answers'][llm]['answer'],
+                        q['qtype']
+                    )
+            except Exception as e:
+                print(f"error scoring {q['faq-id']}: {e}")
+                continue
+        return q
+    except Exception as e:
+        print(f"error processing {q.get('faq-id')}: {e}")
+        return None
+
+
+def score_pipeline(data, output, num_workers=8):
+    ids = set()
     if os.path.exists(output):
         with open(output) as file:
             ids_file = json.load(file)
-        ids = [i['faq-id'] for i in ids_file]
+        ids = {i['faq-id'] for i in ids_file}
+
+    # Filter to unscored questions
+    to_score = [q for q in data if q['faq-id'] not in ids]
+
+    if not to_score:
+        print("All questions already scored.")
+        return
 
     from tqdm import tqdm
-    for q in tqdm(data, desc="Scoring"):
-        if q['faq-id'] in ids:
-            continue
-        try:
-            for llm in q['llm_answers']:
-                # if "gpt" in llm:
-                #     continue
-                # question_block = q['agmmu_question']
-                question_block = q
-                try:
-                    if 'mcq' in llm:
-                        q['llm_answers'][llm]['score'] = score_mcq({question_block['letter']: 1}, q['llm_answers'][llm]['answer'])
-                    elif q['qtype'] in ['management instructions', 'symptom/visual description']:
-                        qset = 'management instructions' if q['qtype'] == 'management instructions' else (
-                            "image description" if 'image description' in q['qa_information'] else 'symptom description'
-                        )
-                        if not isinstance(q['qa_information'][qset], list):
-                            print("not a list", qset, q['qa_information'][qset])
-                        res = score_multi_statement(q['qtype'], q['llm_answers'][llm]['answer'], q['qa_information'][qset])
-                        q['llm_answers'][llm]['score'] = res
 
-                    else:
-                        q['llm_answers'][llm]['score'] = score_few_word(
-                            question_block['question'],
-                            question_block['answer'],
-                            q['llm_answers'][llm]['answer'],
-                            q['qtype']
-                        )
-
-                except Exception as e:
-                    print(f"error: {e}")
-                    continue
-
-            utils.add_item_to_json(output, q)
-        except Exception as e:
-
-            continue
+    if num_workers == 1:
+        # Sequential processing
+        for q in tqdm(to_score, desc="Scoring"):
+            result = score_single_question(q)
+            if result:
+                with _output_lock:
+                    utils.add_item_to_json(output, result)
+    else:
+        # Parallel processing
+        with ThreadPoolExecutor(max_workers=num_workers) as executor:
+            futures = {executor.submit(score_single_question, q): q for q in to_score}
+            for future in tqdm(as_completed(futures), total=len(futures), desc="Scoring"):
+                result = future.result()
+                if result:
+                    with _output_lock:
+                        utils.add_item_to_json(output, result)
 
 
 def score_few_word(question, target, predicted_answer, qtype):
@@ -108,7 +133,7 @@ def score_few_word(question, target, predicted_answer, qtype):
 
     Just return the letters "A", "B", "C", or "D", with no text around it.
     """
-    response = utils.exponential_backoff(utils.chat_gemini, system, prompt, None)
+    response = utils.exponential_backoff(utils.chat_gemini, system, prompt, None, use_vertex=_use_vertex)
 
     filter_map = {"A": 1, "B": 0, "C": 0, "D": 0.5}
     return score_mcq(filter_map, response)
@@ -146,7 +171,7 @@ def score_multi_statement(qtype, actual, expected):
 
     response = utils.exponential_backoff(
         utils.chat_gemini, system, prompt, None,
-        response_schema=MultiStatementScore
+        response_schema=MultiStatementScore, use_vertex=_use_vertex
     )
 
     # Parse JSON and convert from list format to expected dict format
@@ -269,28 +294,31 @@ def calculate_overall_accuracy(overall_scores):
 
 
 if __name__ == "__main__":
-    import argparse
-
     parser = argparse.ArgumentParser()
     parser.add_argument("--input", "-i", required=True, help="Path to input JSON")
     parser.add_argument("--output", "-o", required=True, help="Path to output JSON")
+    parser.add_argument("--vertex", action="store_true", help="Use Vertex AI instead of API key")
+    parser.add_argument("--workers", "-w", type=int, default=8, help="Number of parallel workers (default: 8)")
     args = parser.parse_args()
+
+    # Set global Vertex AI config
+    global _use_vertex
+    _use_vertex = args.vertex
 
     with open(args.input) as f:
         data = json.load(f)
 
-    score_pipeline(data, args.output)
-
+    score_pipeline(data, args.output, num_workers=args.workers)
 
     stats, overall_stats = get_stats(args.output)
     harmonic_means = calculate_harmonic_means(stats)
     overall_accuracy = calculate_overall_accuracy(overall_stats)
-    
+
     # Pretty-print results
     print("\n=== Overall Accuracy Scores ===")
     for model, score in overall_accuracy.items():
         print(f"{model}: {score:.4f}")
-    
+
     print("\n=== Harmonic Mean Scores by Category ===")
     for model, categories in harmonic_means.items():
         print(f"\nModel: {model}")

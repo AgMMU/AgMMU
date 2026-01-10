@@ -160,12 +160,21 @@ class ModelHandler:
         return response
 
 
-def chat_gemini(system, prompt, image_path=None, model="gemini-3-flash-preview", response_schema=None):
+def chat_gemini(system, prompt, image_path=None, model="gemini-3-flash-preview", response_schema=None, use_vertex=False):
     """Call Gemini API with optional image and structured output support."""
     from google import genai
     from google.genai import types
 
-    client = genai.Client(api_key=os.environ.get("GEMINI_API_KEY"))
+    if use_vertex:
+        # Vertex AI - uses ADC, requires global endpoint for Gemini 3 preview models
+        client = genai.Client(
+            vertexai=True,
+            project=os.environ.get("GOOGLE_CLOUD_PROJECT", "deep-learning-v1"),
+            location="global"
+        )
+    else:
+        # Free API tier with API key
+        client = genai.Client(api_key=os.environ.get("GEMINI_API_KEY"))
 
     contents = []
     if system:
