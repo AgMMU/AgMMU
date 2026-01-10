@@ -5,8 +5,8 @@ import os
 import random
 from datetime import datetime
 import sys
-os.chdir('AgMMU/scoring_eval_pipeline')
-sys.path.append('AgMMU/scoring_eval_pipeline') 
+
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import utils 
 
 def format_options(q):
@@ -18,10 +18,12 @@ def format_options(q):
         st += f"{letter} {option}\n"
     return st
 
-def run_llms(prompt, img, q): ## MODIFY THIS TO RUN YOUR LLM
+def run_llms(prompt, img, q, model_fn=None):
     system = "You are a helpful AI assistant."
-    gpt = utils.exponential_backoff(utils.chat_gpt, system, prompt, img)
-    q['answer'] = gpt
+    if model_fn is None:
+        model_fn = utils.chat_gemini
+    response = utils.exponential_backoff(model_fn, system, prompt, img)
+    q['answer'] = response
  
 
 def add_item_to_json(file_path, new_item):
@@ -46,26 +48,32 @@ def eval_data(data, llm_map, output, image_dir):
             existing = json.load(file)
         seen_ids = {item['faq-id'] for item in existing}
 
-    for q in data:
+    from tqdm import tqdm
+    for q in tqdm(data, desc="Evaluating"):
         if q['faq-id'] in seen_ids:
             continue
 
         try:
-            q['llm_answers'] = llm_map
-            img_path = os.path.join(image_dir, f"{q['faq-id']}-1.jpg")
+            q['llm_answers'] = {k: {} for k in llm_map}
+            faq_id = q['faq-id']
+            img_path = os.path.join(image_dir, str(faq_id), f"{faq_id}_1.png")
+
+            if not os.path.exists(img_path):
+                print(f"Image not found: {img_path}")
+                continue
 
             for llm in q['llm_answers']:
-                prefix = q['agmmu_question'].get('question_background', '')
+                prefix = q.get('question_background', '')
                 qtype = q['qtype']
                 if 'mcq' in llm:
                     prompt = (
-                        f"{prefix}{q['agmmu_question']['question']}\n"
-                        f"Options:\n{format_options(q['agmmu_question'])}\n"
+                        f"{prefix}{q['question']}\n"
+                        f"Options:\n{format_options(q)}\n"
                         "Choose the letter corresponding with the correct answer. Only output the single letter."
                     )
                 else:
                     if qtype in ['disease/issue identification', 'insect/pest', 'species']:
-                        prompt = f"Question: {q['agmmu_question']['question']} Answer in 1-3 words."
+                        prompt = f"Question: {q['question']} Answer in 1-3 words."
                     elif qtype == 'management instructions':
                         prompt = "What is the recommended management strategy for the issue seen in this image?\nBe descriptive."
                     elif qtype == 'symptom/visual description':
@@ -80,7 +88,7 @@ def eval_data(data, llm_map, output, image_dir):
             add_item_to_json(output, q)
 
         except Exception as e:
-            print("Error:", e)
+            print(f"Error on {q.get('faq-id')}: {e}")
             continue
 
 def main():
@@ -97,7 +105,7 @@ def main():
 
     eval_data(
         data=data,
-        llm_map={"gpt-4o-oeq": {}, "gpt-4o-mcq":{}}, ## MODIFY THIS FOR YOUR MODEL
+        llm_map={"gemini-3-flash-oeq": {}, "gemini-3-flash-mcq": {}},
         output=args.output_path,
         image_dir=args.image_dir
     )

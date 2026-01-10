@@ -3,12 +3,31 @@ import os
 import sys
 from statistics import harmonic_mean
 import argparse
+from dotenv import load_dotenv
+from pydantic import BaseModel
+
+load_dotenv()
+
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import utils
 
 
-with open('scoring_eval_pipeline/supporting_files/multi_statement.json') as file:
+class StatementMapping(BaseModel):
+    prediction: str
+    gold_target: str
+
+
+class MultiStatementScore(BaseModel):
+    correct: list[StatementMapping]
+    incorrect: list[StatementMapping]
+    partially_correct: list[StatementMapping]
+    missing: list[str]
+    irrelevant: list[str]
+
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+with open(os.path.join(SCRIPT_DIR, 'supporting_files/multi_statement.json')) as file:
     multi = json.load(file)
-with open('scoring_eval_pipeline/supporting_files/few_word_examples.json') as file:
+with open(os.path.join(SCRIPT_DIR, 'supporting_files/few_word_examples.json')) as file:
     few_word_examples = json.load(file)
 
 
@@ -19,7 +38,8 @@ def score_pipeline(data, output):
             ids_file = json.load(file)
         ids = [i['faq-id'] for i in ids_file]
 
-    for q in data:
+    from tqdm import tqdm
+    for q in tqdm(data, desc="Scoring"):
         if q['faq-id'] in ids:
             continue
         try:
@@ -88,7 +108,7 @@ def score_few_word(question, target, predicted_answer, qtype):
 
     Just return the letters "A", "B", "C", or "D", with no text around it.
     """
-    response = utils.exponential_backoff(utils.chat_gpt, system, prompt,None)
+    response = utils.exponential_backoff(utils.chat_gemini, system, prompt, None)
 
     filter_map = {"A": 1, "B": 0, "C": 0, "D": 0.5}
     return score_mcq(filter_map, response)
@@ -99,44 +119,46 @@ def create_multi_examples(qtype,question):
     return st
 
 
-def score_multi_statement(qtype, actual,expected):
-    
+def score_multi_statement(qtype, actual, expected):
+
     if qtype == 'management instructions':
         question = "What is the recommended management strategy for the issue seen in this image?"
     else:
-        question ="What visual features can be seen in this image?" 
-    examples = create_multi_examples(qtype,question)
+        question = "What visual features can be seen in this image?"
+    examples = create_multi_examples(qtype, question)
     system = f"""
-    Your job is to grade student answers from the agriculture and biology domain. Your job is to look at a question, a gold target, and a predicted answer, and then assign grades to each statemetn in the response of  ['correct','partially correct', 'incorrect', 'missing', 'irrelevant'].
-        - Correct is assigned to statements from the predicted answer that fully semantically map to a statement in the gold target.
-        - Partially correct is assigned to statements which partially semantically map to a statement in the gold target.
-        - Incorrect is assigned to statements from the predicted answer that directly semantically contradict a statement in the gold target.
-        - Missing is assigned to statements in the gold target which haven't been mapped within correct,partially correct, or incorrect. 
-        - Irrelevant is assigned to statements in the predicted answer which neither directly contradict nor corrospond in any way to statements in the gold target.
+    Your job is to grade student answers from the agriculture and biology domain. Your job is to look at a question, a gold target, and a predicted answer, and then assign grades to each statement in the response of ['correct', 'partially_correct', 'incorrect', 'missing', 'irrelevant'].
+        - correct is assigned to statements from the predicted answer that fully semantically map to a statement in the gold target.
+        - partially_correct is assigned to statements which partially semantically map to a statement in the gold target.
+        - incorrect is assigned to statements from the predicted answer that directly semantically contradict a statement in the gold target.
+        - missing is assigned to statements in the gold target which haven't been mapped within correct, partially_correct, or incorrect.
+        - irrelevant is assigned to statements in the predicted answer which neither directly contradict nor correspond in any way to statements in the gold target.
 
     EACH STATEMENT IN THE GOLD TARGET AND PREDICTED ANSWER SHOULD BE ASSIGNED TO EXACTLY ONE OF THESE CATEGORIES.
     Here are examples of correctly graded statements:
     {examples}
 
     Remember the following key points:
-        - a statement is always partially correct if it has ANY overlap in content with the target
-
-
-    Question: {question}
-    Gold Target: {expected}
-    Predicted Answer: {actual}
-
-    Follow the format of the examples exactly. Output only a json with no additional text.
+        - a statement is always partially_correct if it has ANY overlap in content with the target
     """
 
-    prompt = f"Question: {question}\nActual Statement:\n{actual}\n True Statement(s):\n{expected}\nScoring:\n"
+    prompt = f"Question: {question}\nGold Target:\n{expected}\nPredicted Answer:\n{actual}"
 
-    response = utils.exponential_backoff(utils.chat_gpt, system, prompt,None)
+    response = utils.exponential_backoff(
+        utils.chat_gemini, system, prompt, None,
+        response_schema=MultiStatementScore
+    )
 
-    response = utils.clean_response(response)
-    
-
-    return response
+    # Parse JSON and convert from list format to expected dict format
+    data = json.loads(response)
+    result = {
+        "correct": {m["prediction"]: m["gold_target"] for m in data.get("correct", [])},
+        "incorrect": {m["prediction"]: m["gold_target"] for m in data.get("incorrect", [])},
+        "partially correct": {m["prediction"]: m["gold_target"] for m in data.get("partially_correct", [])},
+        "missing": data.get("missing", []),
+        "irrelevant": data.get("irrelevant", []),
+    }
+    return result
 
 
 def score_mcq(target_map, predicted):
@@ -148,17 +170,21 @@ def score_mcq(target_map, predicted):
 
 
 def get_stats(data_path):
-    with open(data) as f:
-        data_path = json.load(data)
+    with open(data_path) as f:
+        data = json.load(f)
     scores = {} #to track scores by qtype
     overall_scores = {}  # To track overall metrics across all question types
-    
+
     for i in data:
         for llm in i['llm_answers']:
+            # Skip if no score (scoring failed for this question)
+            if 'score' not in i['llm_answers'][llm]:
+                continue
+
             # Initialize per-category metrics
             scores.setdefault(llm, {}).setdefault(i['qtype'], {"correct": 0, "total": 0, "partial": 0, "num_questions": 0})
             metrics = scores[llm][i['qtype']]
-            
+
             # Initialize overall metrics for this LLM if not exists
             overall_scores.setdefault(llm, {"correct": 0, "total": 0, "partial": 0, "num_questions": 0})
             overall_metrics = overall_scores[llm]

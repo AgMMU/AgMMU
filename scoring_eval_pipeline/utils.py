@@ -16,11 +16,13 @@ import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer, pipeline
 from tqdm import tqdm
 
-def exponential_backoff(func, *args, max_retries=100, delay=1):
+load_dotenv()
+
+def exponential_backoff(func, *args, max_retries=100, delay=1, **kwargs):
     cnt = 0
     while cnt < max_retries:
         try:
-            return func(*args)
+            return func(*args, **kwargs)
         except RateLimitError as e:
             print(f"Rate limit reached: {e}. Retrying in {delay} seconds...")
             time.sleep(delay)
@@ -154,5 +156,31 @@ class ModelHandler:
         
 
         response = self.tokenizer.batch_decode(generated_ids, skip_special_tokens=True)[0]
-        
+
         return response
+
+
+def chat_gemini(system, prompt, image_path=None, model="gemini-3-flash-preview", response_schema=None):
+    """Call Gemini API with optional image and structured output support."""
+    from google import genai
+    from google.genai import types
+
+    client = genai.Client(api_key=os.environ.get("GEMINI_API_KEY"))
+
+    contents = []
+    if system:
+        contents.append(system + "\n\n")
+    if image_path:
+        img = Image.open(image_path)
+        contents.append(img)
+    contents.append(prompt)
+
+    config = None
+    if response_schema:
+        config = types.GenerateContentConfig(
+            response_mime_type='application/json',
+            response_schema=response_schema,
+        )
+
+    response = client.models.generate_content(model=model, contents=contents, config=config)
+    return response.text.strip()
